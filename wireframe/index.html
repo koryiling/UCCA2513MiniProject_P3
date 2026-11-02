@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low-Fidelity Wireframe – UTAR Admission Assistant (Design Option A)</title>
+<style>
+  :root {
+    --ink: #333; --mid: #777; --line: #9a9a9a; --fill: #e6e6e6; --soft: #f3f3f3; --bg: #fff;
+    --note: #1f5fbf; --note-bg: #e8f0fc;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px; background: #fafafa; color: var(--ink);
+         font: 14px/1.45 Arial, Helvetica, sans-serif; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--mid); margin: 0 0 24px; }
+  .layout { display: grid; grid-template-columns: 1200px 340px; gap: 28px; align-items: start; }
+  .frame-title { font-weight: bold; margin: 0 0 8px; font-size: 15px; }
+  .frame { width: 1200px; background: var(--bg); border: 2px solid var(--ink); margin-bottom: 40px; }
+
+  /* generic wireframe blocks */
+  .box { border: 1.5px solid var(--line); background: var(--bg); position: relative; }
+  .fill { background: var(--fill); }
+  .ph { display: flex; align-items: center; justify-content: center; color: var(--mid);
+        border: 1.5px dashed var(--line); background: var(--soft); }
+  .btn { display: inline-block; border: 1.5px solid var(--ink); padding: 8px 18px; border-radius: 4px; font-weight: bold; }
+  .btn.dark { background: #555; color: #fff; border-color: #555; }
+  .chip { display: inline-block; border: 1.5px solid var(--line); border-radius: 16px; padding: 4px 12px; margin: 0 6px 6px 0; font-size: 13px; }
+  .tag { position: absolute; top: -11px; left: -11px; width: 24px; height: 24px; border-radius: 50%;
+         background: var(--note); color: #fff; font: bold 12px/24px Arial; text-align: center; z-index: 2; }
+  .muted { color: var(--mid); font-size: 12px; }
+  .section { padding: 24px 32px; }
+  .section h2 { font-size: 18px; margin: 0 0 12px; }
+
+  /* header */
+  .header { display: flex; align-items: center; gap: 20px; padding: 16px 32px; border-bottom: 1.5px solid var(--line); }
+  .logo { width: 120px; height: 44px; }
+  .site-name { font-weight: bold; font-size: 17px; border-left: 1.5px solid var(--line); padding-left: 20px; }
+  .nav { display: flex; gap: 28px; margin-left: auto; margin-right: 28px; }
+  .nav span:first-child { border-bottom: 2px solid var(--ink); }
+
+  /* hero */
+  .hero { display: grid; grid-template-columns: 1fr 380px; gap: 24px; padding: 36px 32px; }
+  .hero h3 { font-size: 30px; margin: 0 0 8px; }
+  .img { height: 170px; }
+
+  .deadline { margin: 0 32px; padding: 12px 16px; display: flex; gap: 24px; align-items: center; }
+
+  .cards2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .card { padding: 18px; display: flex; gap: 16px; align-items: center; min-height: 92px; }
+  .icon { width: 56px; height: 56px; flex: none; }
+  .card b { display: block; margin-bottom: 4px; }
+
+  .group-label { font-weight: bold; color: var(--mid); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; margin: 4px 0 8px; }
+  .cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+  .mcard { padding: 14px; min-height: 108px; }
+  .mcard .icon { width: 36px; height: 36px; margin-bottom: 8px; }
+  .future { min-height: 70px; }
+
+  .chat { margin: 8px 32px 28px; }
+  .chat-head { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1.5px solid var(--line); }
+  .chat-body { padding: 16px; }
+  .bubble { display: inline-block; padding: 10px 14px; border-radius: 10px; background: var(--fill); margin-bottom: 12px; }
+  .input { display: flex; gap: 12px; margin-top: 8px; }
+  .input .ph:first-child { flex: 1; height: 40px; justify-content: flex-start; padding-left: 12px; }
+  .send { width: 40px; height: 40px; border-radius: 50%; flex: none; }
+
+  .footer { background: #555; color: #fff; display: flex; align-items: center; gap: 32px; padding: 20px 32px; position: relative; }
+  .footer .links { display: flex; gap: 20px; margin-left: 40px; }
+  .footer .social { margin-left: auto; display: flex; gap: 10px; }
+  .footer .social i { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid #fff; display: block; }
+
+  /* module page template */
+  .crumb { padding: 12px 32px 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 70px; }
+  .field { height: 34px; margin: 6px 0 12px; justify-content: flex-start; padding-left: 10px; }
+  .fab { position: absolute; right: 24px; bottom: 66px; width: 64px; height: 64px; border-radius: 50%;
+         background: #555; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+  .steps { display: flex; gap: 8px; align-items: center; }
+  .step { flex: 1; text-align: center; padding: 10px 4px; font-size: 12px; }
+  .step.done { background: var(--fill); }
+  .arrow { color: var(--mid); }
+  .line { height: 10px; background: var(--fill); margin: 8px 0; }
+  .check { display: flex; gap: 8px; align-items: center; margin: 6px 0; }
+  .check i { width: 14px; height: 14px; border: 1.5px solid var(--ink); display: block; }
+
+  /* annotation panel */
+  .notes { position: sticky; top: 20px; background: var(--bg); border: 1.5px solid var(--line); padding: 18px; }
+  .notes h3 { margin: 0 0 10px; font-size: 15px; }
+  .notes ol { padding-left: 0; list-style: none; margin: 0; }
+  .notes li { display: grid; grid-template-columns: 26px 1fr; gap: 6px; margin-bottom: 10px; font-size: 13px; }
+  .notes li .n { width: 22px; height: 22px; border-radius: 50%; background: var(--note); color: #fff; text-align: center; font: bold 11px/22px Arial; }
+  .stack { background: var(--note-bg); padding: 10px 12px; font-size: 12.5px; margin-top: 14px; }
+  .stack b { display: block; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<h1>Low-Fidelity Wireframe – UTAR Admission Assistant</h1>
+<p class="sub">Design Option A · Greyscale boxes and labels only · Desktop width 1200 px · For group discussion and recreation in Figma</p>
+
+<div class="layout">
+<div>
+
+<!-- ===================== FRAME 1: HOME ===================== -->
+<p class="frame-title">Frame 1 – Home page</p>
+<div class="frame">
+
+  <div class="header box" style="border:0;border-bottom:1.5px solid var(--line)">
+    <span class="tag">1</span>
+    <div class="logo ph">LOGO</div>
+    <div class="site-name">UTAR Admission Assistant</div>
+    <div class="nav"><span>Home</span><span>Admission ▾</span><span>Application ▾</span><span>FAQ</span></div>
+    <div class="btn dark">Login</div>
+  </div>
+
+  <div class="hero fill" style="position:relative">
+    <span class="tag">2</span>
+    <div>
+      <h3>Your Future Starts Here</h3>
+      <p>Explore admission information and learn how to apply to UTAR.</p>
+      <span class="btn dark">Explore Admission</span>&nbsp;&nbsp;<span class="btn">Ask Assistant</span>
+    </div>
+    <div class="img ph">[ Hero image ]</div>
+  </div>
+
+  <div class="deadline box" style="margin-top:20px">
+    <span class="tag">3</span>
+    <b>Upcoming Deadlines</b>
+    <span class="chip">[Intake name] – application closes [date]</span>
+    <span class="chip">[Intake name] – [date]</span>
+    <span class="muted" style="margin-left:auto">View all dates →</span>
+  </div>
+
+  <div class="section" style="position:relative">
+    <span class="tag" style="top:24px;left:4px">4</span>
+    <h2>Explore Admission Information</h2>
+    <div class="cards2">
+      <div class="card box"><div class="icon ph">icon</div><div><b>Admission Requirements</b><span class="muted">Academic and English entry requirements</span></div><span style="margin-left:auto">›</span></div>
+      <div class="card box"><div class="icon ph">icon</div><div><b>Application Procedure</b><span class="muted">Steps and documents needed to apply</span></div><span style="margin-left:auto">›</span></div>
+    </div>
+  </div>
+
+  <div class="section" style="position:relative;padding-top:4px">
+    <span class="tag" style="top:2px;left:4px">5</span>
+    <h2>Admission Tools</h2>
+    <div class="group-label">Before you apply (under “Admission”)</div>
+    <div class="cards3">
+      <div class="mcard box"><div class="icon ph">icon</div><b>Admission Requirement Explainer</b><div class="muted">Requirements in plain language</div></div>
+      <div class="mcard box"><div class="icon ph">icon</div><b>Smart Eligibility Checker</b><div class="muted">Enter results → indicative result</div></div>
+      <div class="mcard box"><div class="icon ph">icon</div><b>Alternative Pathway Recommendation</b><div class="muted">Other routes if a requirement is not met</div></div>
+    </div>
+    <div class="group-label">When you apply (under “Application”)</div>
+    <div class="cards3">
+      <div class="mcard box"><div class="icon ph">icon</div><b>Personalized Document Checklist</b><div class="muted">Documents for your situation (login to save)</div></div>
+      <div class="mcard box"><div class="icon ph">icon</div><b>Application Journey Tracker</b><div class="muted">Track your own progress (login required)</div></div>
+      <div class="mcard box"><div class="icon ph">icon</div><b>Application Date &amp; Reminder</b><div class="muted">Key dates and upcoming deadlines</div></div>
+    </div>
+    <div class="ph future">+ Space reserved for future modules (same card style)</div>
+  </div>
+
+  <div class="chat box">
+    <span class="tag">6</span>
+    <div class="chat-head fill"><div class="icon ph" style="width:32px;height:32px">bot</div><b>UTAR Admission Assistant</b><span class="muted" style="margin-left:auto">● Online</span></div>
+    <div class="chat-body">
+      <div class="bubble">Hello! Welcome to UTAR Admission Assistant. How can I help you today?</div>
+      <div class="muted" style="margin-bottom:6px">Suggested questions:</div>
+      <span class="chip">What are the entry requirements?</span><span class="chip">How do I apply to UTAR?</span><span class="chip">What documents do I need?</span><span class="chip">Check my eligibility →</span>
+      <div class="input"><div class="ph">Type your question here…</div><div class="send ph">➤</div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="tag">7</span>
+    <div><b>UTAR Admission Assistant</b><br><span style="font-size:12px">Your guide to UTAR admission information.</span></div>
+    <div class="links"><span>Official UTAR Website</span>|<span>Contact Us</span>|<span>FAQ</span></div>
+    <div class="social"><i></i><i></i><i></i></div>
+  </div>
+</div>
+
+<!-- ===================== FRAME 2: MODULE PAGE TEMPLATE ===================== -->
+<p class="frame-title">Frame 2 – Module page template (example: Smart Eligibility Checker)</p>
+<div class="frame" style="position:relative">
+  <div class="header" style="border-bottom:1.5px solid var(--line)">
+    <div class="logo ph">LOGO</div><div class="site-name">UTAR Admission Assistant</div>
+    <div class="nav"><span style="border:0">Home</span><span style="border-bottom:2px solid var(--ink)">Admission ▾</span><span>Application ▾</span><span>FAQ</span></div>
+    <div class="btn dark">Login</div>
+  </div>
+  <div class="crumb muted">Home › Admission › Smart Eligibility Checker</div>
+  <div class="section">
+    <h2>Smart Eligibility Checker</h2>
+    <div class="two-col">
+      <div class="box" style="padding:16px">
+        <span class="tag">8</span>
+        <b>Input form</b>
+        <div class="muted">Programme</div><div class="field ph">[ Select programme ▾ ]</div>
+        <div class="muted">Qualification type</div><div class="field ph">[ SPM / STPM / UEC / … ▾ ]</div>
+        <div class="muted">Subjects and grades</div><div class="field ph">[ Subject ] [ Grade ] + Add</div>
+        <span class="btn dark">Check</span>
+      </div>
+      <div class="box" style="padding:16px">
+        <span class="tag">9</span>
+        <b>Result panel</b>
+        <div class="ph" style="height:46px;margin:8px 0">Indicative result: Appears to meet / May not meet</div>
+        <div class="muted">Unmet conditions (if any)</div><div class="line"></div><div class="line" style="width:70%"></div>
+        <div class="box" style="padding:10px;margin-top:10px"><b>Alternative pathways</b><div class="muted">e.g. related foundation / diploma programme → link</div></div>
+        <p class="muted" style="margin-top:10px">Disclaimer: Indicative only, not an official admission decision. Verify with UTAR DACE. [Official source link]</p>
+      </div>
+    </div>
+  </div>
+  <div class="fab">Chat</div><span class="tag" style="left:auto;right:76px;top:auto;bottom:116px">10</span>
+  <div class="footer" style="padding:14px 32px"><b>Footer (same as Home)</b></div>
+</div>
+
+<!-- ===================== FRAME 3: STUDENT DASHBOARD ===================== -->
+<p class="frame-title">Frame 3 – Student dashboard (after login)</p>
+<div class="frame" style="position:relative">
+  <div class="header" style="border-bottom:1.5px solid var(--line)">
+    <div class="logo ph">LOGO</div><div class="site-name">UTAR Admission Assistant</div>
+    <div class="nav"><span style="border:0">Home</span><span>Admission ▾</span><span>Application ▾</span><span>FAQ</span></div>
+    <div class="btn">[Student name] ▾</div>
+  </div>
+  <div class="section">
+    <h2>My Application</h2>
+    <div class="box" style="padding:16px;margin-bottom:16px">
+      <span class="tag">11</span>
+      <b>Application Journey Tracker</b>
+      <div class="steps" style="margin-top:10px">
+        <div class="step box done">Explore programme</div><span class="arrow">→</span>
+        <div class="step box done">Check eligibility</div><span class="arrow">→</span>
+        <div class="step box">Prepare documents</div><span class="arrow">→</span>
+        <div class="step box">Submit application</div><span class="arrow">→</span>
+        <div class="step box">Await offer</div>
+      </div>
+      <div class="muted" style="margin-top:8px">Updated by the student; not linked to UTAR’s official system.</div>
+    </div>
+    <div class="two-col">
+      <div class="box" style="padding:16px">
+        <span class="tag">12</span>
+        <b>My Document Checklist</b> <span class="muted">(3 / 6 ready)</span>
+        <div class="check"><i></i>[Document 1]</div><div class="check"><i></i>[Document 2]</div><div class="check"><i></i>[Document 3]</div>
+      </div>
+      <div class="box" style="padding:16px">
+        <span class="tag">13</span>
+        <b>Upcoming Dates &amp; Reminders</b>
+        <div class="line"></div><div class="line" style="width:80%"></div><div class="line" style="width:60%"></div>
+        <div class="muted">Highlighted when a deadline is near.</div>
+      </div>
+    </div>
+  </div>
+  <div class="fab">Chat</div>
+  <div class="footer" style="padding:14px 32px"><b>Footer (same as Home)</b></div>
+</div>
+
+</div>
+
+<!-- ===================== ANNOTATIONS ===================== -->
+<aside class="notes">
+  <h3>Section labels and purpose</h3>
+  <ol>
+    <li><span class="n">1</span><span><b>Header / navigation bar</b> – Logo (top-left), site name, menu (Home, Admission, Application, FAQ) and Login button (top-right). Same on every page.</span></li>
+    <li><span class="n">2</span><span><b>Hero banner</b> – Short welcome message; buttons lead to admission information or open the chatbot.</span></li>
+    <li><span class="n">3</span><span><b>Upcoming deadlines strip</b> – Preview from <i>Application Date &amp; Reminder</i>.</span></li>
+    <li><span class="n">4</span><span><b>Main content</b> – The two original core areas: Admission Requirements and Application Procedure.</span></li>
+    <li><span class="n">5</span><span><b>Admission Tools (modules)</b> – Six module cards in two groups that match the menu. A dashed slot is reserved for modules added later.</span></li>
+    <li><span class="n">6</span><span><b>Chatbot panel</b> – Rule-based assistant with suggested questions and links to modules.</span></li>
+    <li><span class="n">7</span><span><b>Footer</b> – Official UTAR link, Contact Us, FAQ, social icons.</span></li>
+    <li><span class="n">8</span><span><b>Module input area</b> – Every module page uses the same layout: breadcrumb, title, input on the left.</span></li>
+    <li><span class="n">9</span><span><b>Result area</b> – Output on the right, with a disclaimer and an official source link. Alternative pathways appear here if a requirement is not met.</span></li>
+    <li><span class="n">10</span><span><b>Floating chat button</b> – Bottom-right on module pages; opens the same chatbot.</span></li>
+    <li><span class="n">11</span><span><b>Journey Tracker</b> – Stages updated by the student (login required).</span></li>
+    <li><span class="n">12</span><span><b>Document Checklist</b> – Saved checklist generated by the module (login required).</span></li>
+    <li><span class="n">13</span><span><b>Dates &amp; Reminders</b> – Upcoming deadlines highlighted on the dashboard.</span></li>
+  </ol>
+  <div class="stack">
+    <b>Login (proposed, confirm with group)</b>
+    Guests can use the chatbot, Explainer, Eligibility Checker, Pathways and Dates. Login is needed only to save the checklist, the tracker and personal reminders.
+  </div>
+  <div class="stack">
+    <b>Technology stack</b>
+    Frontend: HTML, CSS, JavaScript · Backend: Node.js · Database: MySQL · Design: Figma
+  </div>
+</aside>
+</div>
+</body>
+</html>

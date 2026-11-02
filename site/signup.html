@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign Up | UTAR Admission Assistant</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+  <div class="auth-card">
+    <aside class="auth-side">
+      <a href="index.html"><img src="images/logo.jpg" alt="UTAR logo" class="auth-logo"></a>
+      <h2>UTAR Admission Assistant</h2>
+      <p>Create a free account to save your progress as you prepare your UTAR application.</p>
+      <ul class="auth-perks">
+        <li>Personalized document checklist</li>
+        <li>Application journey tracker</li>
+        <li>Deadline reminders</li>
+      </ul>
+    </aside>
+
+    <section class="auth-main">
+      <a href="index.html" class="back-link">← Back to Home</a>
+      <img src="images/logo.jpg" alt="UTAR logo" class="auth-logo-mobile">
+      <h1>Create an account</h1>
+      <p class="auth-sub">Sign up in a few seconds</p>
+
+      <form id="signupForm" novalidate>
+        <label for="name">Full name</label>
+        <input id="name" name="name" type="text" placeholder="Your full name" autocomplete="name">
+        <small class="error" data-for="name"></small>
+
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+        <small class="error" data-for="email"></small>
+
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input id="password" name="password" type="password" placeholder="At least 8 characters" autocomplete="new-password">
+          <button type="button" class="pw-toggle" data-target="password">Show</button>
+        </div>
+        <small class="error" data-for="password"></small>
+
+        <label for="confirm">Confirm password</label>
+        <div class="pw-wrap">
+          <input id="confirm" name="confirm" type="password" placeholder="Re-enter your password" autocomplete="new-password">
+          <button type="button" class="pw-toggle" data-target="confirm">Show</button>
+        </div>
+        <small class="error" data-for="confirm"></small>
+
+        <label class="check"><input type="checkbox" id="agree" name="agree"> I understand this system provides guidance only and is not an official UTAR application.</label>
+        <small class="error" data-for="agree"></small>
+
+        <button type="submit" class="btn btn-dark btn-block">Sign Up</button>
+      </form>
+
+      <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+    </section>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
