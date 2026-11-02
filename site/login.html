@@ -3,48 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login | UTAR Admission Assistant</title>
+  <title data-i18n="title.login">Login | UTAR Admission Assistant</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="auth-page">
   <div class="auth-card">
     <aside class="auth-side">
       <a href="index.html"><img src="images/logo.jpg" alt="UTAR logo" class="auth-logo"></a>
-      <h2>UTAR Admission Assistant</h2>
-      <p>Log in to access the Application section: your document checklist, application journey tracker and deadline reminders.</p>
+      <h2 data-i18n="auth.side.title">UTAR Admission Assistant</h2>
+      <p data-i18n="auth.login.side">Log in to access the Application section: your document checklist, application journey tracker and deadline reminders.</p>
     </aside>
 
     <section class="auth-main">
-      <a href="index.html" class="back-link">← Back to Home</a>
+      <div class="auth-top">
+        <a href="index.html" class="back-link" data-i18n="auth.back">← Back to Home</a>
+        <div class="auth-lang"></div>
+      </div>
       <img src="images/logo.jpg" alt="UTAR logo" class="auth-logo-mobile">
-      <h1>Welcome back</h1>
-      <p class="auth-sub">Log in to continue to the Application section</p>
+      <h1 data-i18n="auth.login.h">Welcome back</h1>
+      <p class="auth-sub" data-i18n="auth.login.sub">Log in to continue to the Application section</p>
 
       <form id="loginForm" novalidate>
-        <label for="email">Email</label>
+        <label for="email" data-i18n="auth.email">Email</label>
         <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email">
         <small class="error" data-for="email"></small>
 
-        <label for="password">Password</label>
+        <label for="password" data-i18n="auth.password">Password</label>
         <div class="pw-wrap">
-          <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password">
-          <button type="button" class="pw-toggle" data-target="password">Show</button>
+          <input id="password" name="password" type="password" placeholder="Enter your password" data-i18n-placeholder="auth.ph.password" autocomplete="current-password">
+          <button type="button" class="pw-toggle" data-target="password" data-i18n="auth.show">Show</button>
         </div>
         <small class="error" data-for="password"></small>
 
         <div class="auth-row">
-          <label class="check"><input type="checkbox" name="remember"> Remember me</label>
-          <a href="#" id="forgotLink">Forgot password?</a>
+          <label class="check"><input type="checkbox" name="remember"> <span data-i18n="auth.remember">Remember me</span></label>
+          <a href="#" id="forgotLink" data-i18n="auth.forgot">Forgot password?</a>
         </div>
 
-        <button type="submit" class="btn btn-dark btn-block">Login</button>
+        <button type="submit" class="btn btn-dark btn-block" data-i18n="auth.login.btn">Login</button>
       </form>
 
-      <p class="auth-switch">Don't have an account? <a href="signup.html">Sign up</a></p>
-      <p class="auth-guest"><a href="index.html">Continue as guest</a></p>
+      <p class="auth-switch"><span data-i18n="auth.noAccount">Don't have an account?</span> <a href="signup.html" data-i18n="auth.signupLink">Sign up</a></p>
+      <p class="auth-guest"><a href="index.html" data-i18n="auth.guest">Continue as guest</a></p>
     </section>
   </div>
 
+  <script src="js/i18n.js"></script>
   <script src="js/auth.js"></script>
 </body>
 </html>

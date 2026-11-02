@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Application | UTAR Admission Assistant</title>
+  <title data-i18n="title.application">Application | UTAR Admission Assistant</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="application">
@@ -12,63 +12,94 @@
   <main>
     <section class="page-hero">
       <div class="container">
-        <p class="crumb"><a href="index.html">Home</a> › Application</p>
-        <h1>Application Procedure</h1>
-        <p>Understand the steps and documents needed to apply to UTAR.</p>
+        <p class="crumb"><a href="index.html" data-i18n="nav.home">Home</a> › <span data-i18n="nav.application">Application</span></p>
+        <h1 data-i18n="app.title">Application Procedure</h1>
+        <p data-i18n="app.sub">Understand the steps, dates and documents needed to apply to UTAR.</p>
       </div>
     </section>
 
     <section class="container section">
-      <h2>Application Steps</h2>
-      <ol class="steps">
-        <li><b>1</b><span>Choose a programme</span></li>
-        <li><b>2</b><span>Check the entry requirements</span></li>
-        <li><b>3</b><span>Prepare supporting documents</span></li>
-        <li><b>4</b><span>Submit the online application</span></li>
-        <li><b>5</b><span>Wait for the offer outcome</span></li>
+      <h2 data-i18n="app.steps.h">Application Steps</h2>
+      <ol class="steps steps-detail">
+        <li><b>1</b><strong data-i18n="app.s1.h">Apply online</strong><span data-i18n="app.s1.p">Register an account and complete the online application form.</span></li>
+        <li><b>2</b><strong data-i18n="app.s2.h">Upload documents</strong><span data-i18n="app.s2.p">Provide the information and supporting documents listed in UTAR's Application Checklist.</span></li>
+        <li><b>3</b><strong data-i18n="app.s3.h">Get the outcome</strong><span data-i18n="app.s3.p">The result is usually released within 7 working days by email and SMS / WhatsApp. It may take longer if credit evaluation, an assessment or an interview is needed.</span></li>
+        <li><b>4</b><strong data-i18n="app.s4.h">Accept the offer</strong><span data-i18n="app.s4.p">Read your offer letter, then pay the fees shown in your Student Bill by the due date. Keep your payment receipt.</span></li>
+        <li><b>5</b><strong data-i18n="app.s5.h">Get your student account</strong><span data-i18n="app.s5.p">Your Student ID is created after payment (about 3 working days via JomPAY or Public Bank). Then log in to the UTAR Portal, create your UTAR email and complete the Student Verification Exercise.</span></li>
+        <li><b>6</b><strong data-i18n="app.s6.h">Attend orientation</strong><span data-i18n="app.s6.p">Join the freshmen orientation and bring the documents listed below.</span></li>
       </ol>
-      <p class="source">General overview only. Follow the official guide:
-        <a href="https://admission.utar.edu.my/Apply_Now.php" target="_blank" rel="noopener">UTAR Apply Now ↗</a></p>
+      <p class="tip" data-i18n="app.tip">🌏 <b>International students:</b> apply at least 12 weeks before the programme starts. Applications sent less than 4 weeks before may be moved to the next intake.</p>
+      <p class="source" data-i18n="app.steps.source">Sources:
+        <a href="https://admission.utar.edu.my/Apply_Now.php" target="_blank" rel="noopener">UTAR Apply Now ↗</a> ·
+        <a href="https://admission.utar.edu.my/Acceptance-and-Registration.php" target="_blank" rel="noopener">UTAR Acceptance &amp; Registration ↗</a></p>
     </section>
 
     <section class="container section" id="dates">
-      <h2>Important Dates</h2>
+      <h2 data-i18n="app.dates.h">Upcoming Intakes</h2>
       <table class="dates">
-        <thead><tr><th>Intake</th><th>Event</th><th>Date</th></tr></thead>
+        <thead><tr><th data-i18n="app.dates.col1">Programme</th><th data-i18n="app.dates.col2">Intake</th><th data-i18n="app.dates.col3">Programme starts</th></tr></thead>
         <tbody>
-          <tr><td>[Intake A]</td><td>Application closes</td><td>[Date]</td></tr>
-          <tr><td>[Intake B]</td><td>Application closes</td><td>[Date]</td></tr>
+          <tr><td data-i18n="app.dates.foundation">Foundation</td><td data-i18n="app.dates.jan27">January 2027</td><td data-i18n="app.dates.d1">25 January 2027</td></tr>
+          <tr><td data-i18n="app.dates.foundation">Foundation</td><td data-i18n="app.dates.jun27">June 2027</td><td data-i18n="app.dates.d2">9 June 2027</td></tr>
+          <tr><td data-i18n="app.dates.bachelor">Bachelor's Degree (except MBBS &amp; Nursing)</td><td data-i18n="app.dates.jan27">January 2027</td><td data-i18n="app.dates.d1">25 January 2027</td></tr>
+          <tr><td data-i18n="app.dates.bachelor">Bachelor's Degree (except MBBS &amp; Nursing)</td><td data-i18n="app.dates.jun27">June 2027</td><td data-i18n="app.dates.d2">9 June 2027</td></tr>
+          <tr><td data-i18n="app.dates.nursing">Nursing</td><td data-i18n="app.dates.jun27">June 2027</td><td data-i18n="app.dates.d2">9 June 2027</td></tr>
+          <tr><td data-i18n="app.dates.mbbs">Medicine (MBBS)</td><td data-i18n="app.dates.mbbsIntake">One intake per year (October)</td><td data-i18n="app.dates.mbbsDate">Next date not yet announced</td></tr>
         </tbody>
       </table>
-      <p class="source">Sample placeholders. Real dates will be taken from official UTAR announcements.</p>
+      <p class="source" data-i18n="app.dates.source">Source:
+        <a href="https://admission.utar.edu.my/intake-and-Academic-Calendar.php" target="_blank" rel="noopener">UTAR Intake &amp; Academic Calendar ↗</a>
+        · Last checked: 2 November 2026. Application closing dates are not listed for most programmes; check the official page.</p>
+    </section>
+
+    <section class="container section">
+      <h2 data-i18n="app.docs.h">Documents to Prepare</h2>
+      <div class="grid-2">
+        <div class="info-box">
+          <h3 data-i18n="app.docs.apply.h">When you apply</h3>
+          <ul class="plain-list">
+            <li data-i18n="app.docs.apply.1">Supporting documents listed in UTAR's Application Checklist</li>
+            <li data-i18n="app.docs.apply.2">For credit transfer: certified transcripts, programme structure and course syllabus</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h3 data-i18n="app.docs.reg.h">At registration / orientation</h3>
+          <ul class="plain-list">
+            <li data-i18n="app.docs.reg.1">Health Examination Report</li>
+            <li data-i18n="app.docs.reg.2">Original and photocopy of your educational certificates</li>
+            <li data-i18n="app.docs.reg.3">Identity document: MyKad (Malaysians) or passport (international students)</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <section class="container section" id="tools">
-      <h2>Application Tools</h2>
+      <h2 data-i18n="app.tools.h">Application Tools</h2>
       <div class="grid-3">
         <article class="module-card" data-module="Personalized Document Checklist">
           <span class="m-icon">🗂️</span>
-          <h3>Personalized Document Checklist</h3>
-          <p>Get a checklist of supporting documents for your situation.</p>
-          <span class="m-link">Open →</span>
+          <h3 data-i18n="mod.checklist.title">Personalized Document Checklist</h3>
+          <p data-i18n="mod.checklist.desc">Get a checklist of supporting documents for your situation.</p>
+          <span class="m-link" data-i18n="open">Open →</span>
         </article>
         <article class="module-card" data-module="Application Journey Tracker">
           <span class="m-icon">📍</span>
-          <h3>Application Journey Tracker</h3>
-          <p>Follow each stage of your application and record your progress.</p>
-          <span class="m-link">Open →</span>
+          <h3 data-i18n="mod.tracker.title">Application Journey Tracker</h3>
+          <p data-i18n="mod.tracker.desc">Follow each stage of your application and record your progress.</p>
+          <span class="m-link" data-i18n="open">Open →</span>
         </article>
         <article class="module-card" data-module="Application Date &amp; Reminder">
           <span class="m-icon">📅</span>
-          <h3>Application Date &amp; Reminder</h3>
-          <p>View important intake dates and get reminders of upcoming deadlines.</p>
-          <span class="m-link">Open →</span>
+          <h3 data-i18n="mod.dates.title">Application Date &amp; Reminder</h3>
+          <p data-i18n="mod.dates.desc">View important intake dates and get reminders of upcoming deadlines.</p>
+          <span class="m-link" data-i18n="open">Open →</span>
         </article>
       </div>
     </section>
   </main>
 
   <div id="site-footer"></div>
+  <script src="js/i18n.js"></script>
   <script src="js/script.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admission | UTAR Admission Assistant</title>
+  <title data-i18n="title.admission">Admission | UTAR Admission Assistant</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="admission">
@@ -12,57 +12,108 @@
   <main>
     <section class="page-hero">
       <div class="container">
-        <p class="crumb"><a href="index.html">Home</a> › Admission</p>
-        <h1>Admission Requirements</h1>
-        <p>Find out what you need to be admitted to a UTAR programme.</p>
+        <p class="crumb"><a href="index.html" data-i18n="nav.home">Home</a> › <span data-i18n="nav.admission">Admission</span></p>
+        <h1 data-i18n="adm.title">Admission Requirements</h1>
+        <p data-i18n="adm.sub">Find out which qualifications UTAR accepts and what English-language level you need.</p>
       </div>
     </section>
 
     <section class="container section">
-      <div class="grid-3">
+      <h2 data-i18n="adm.qual.h">Accepted Entry Qualifications</h2>
+      <div class="grid-2">
         <div class="info-box">
-          <h3>Academic qualification</h3>
-          <p>Requirements depend on the programme and your qualification, such as SPM, STPM, UEC or a foundation programme.</p>
+          <h3 data-i18n="adm.qual.foundation">Foundation programmes</h3>
+          <ul class="plain-list">
+            <li>SPM</li>
+            <li data-i18n="adm.qual.igcse">O-Level / IGCSE</li>
+            <li data-i18n="adm.qual.uec">Unified Examination Certificate (UEC)</li>
+            <li data-i18n="adm.qual.equiv">Other equivalent qualifications recognised by the Malaysian Government</li>
+          </ul>
         </div>
         <div class="info-box">
-          <h3>English language</h3>
-          <p>Applicants must also meet the English-language requirement set for their programme.</p>
-        </div>
-        <div class="info-box">
-          <h3>Programme-specific conditions</h3>
-          <p>Some programmes require particular subjects or minimum grades.</p>
+          <h3 data-i18n="adm.qual.bachelor">Bachelor's Degree programmes</h3>
+          <ul class="plain-list">
+            <li>STPM</li>
+            <li>UEC</li>
+            <li>A-Level</li>
+            <li data-i18n="adm.qual.sam">South Australian Matriculation (SAM)</li>
+            <li data-i18n="adm.qual.cpu">Canadian Pre-University (CPU)</li>
+            <li data-i18n="adm.qual.fm">Foundation / Matriculation</li>
+            <li data-i18n="adm.qual.diploma">Diploma</li>
+            <li data-i18n="adm.qual.equiv">Other equivalent qualifications recognised by the Malaysian Government</li>
+          </ul>
         </div>
       </div>
-      <p class="source">Requirements may change. Always refer to the official page:
-        <a href="https://admission.utar.edu.my/Entry-Qualifications-and-English-Language-Requirements.php" target="_blank" rel="noopener">UTAR Entry Qualifications &amp; English Language Requirements ↗</a></p>
+      <p class="source" data-i18n="adm.qual.note">Minimum grades differ for each programme. Check the programme lists for
+        <a href="https://study.utar.edu.my/foundation.php" target="_blank" rel="noopener">Foundation ↗</a> and
+        <a href="https://study.utar.edu.my/undergraduate.php" target="_blank" rel="noopener">Undergraduate ↗</a> programmes.</p>
+    </section>
+
+    <section class="container section">
+      <h2 data-i18n="adm.eng.h">English Language Requirement</h2>
+      <p data-i18n="adm.eng.intro">Most programmes require a credit or a relevant score in English. If your score is lower, you may still be admitted with conditions:</p>
+      <div class="grid-2">
+        <div class="info-box">
+          <h3 data-i18n="adm.eng.f.h">Foundation</h3>
+          <p data-i18n="adm.eng.f.p1">You may receive a conditional offer and must join the English Enhancement Programme (EEP), passing EEP Level 7 within your first two trimesters.</p>
+          <p data-i18n="adm.eng.f.p2">If your previous qualification was taught fully in English, you are exempted, but you still need at least a pass in SPM English or equivalent.</p>
+        </div>
+        <div class="info-box">
+          <h3 data-i18n="adm.eng.b.h">Bachelor's Degree (Malaysian students)</h3>
+          <p data-i18n="adm.eng.b.p1">If you have at least a pass in SPM English, you may be admitted but must take the Intensive English Programme (IEP) and pass IEP CEFR B2 before starting your degree.</p>
+          <p data-i18n="adm.eng.b.p2">International students need a minimum score in a recognised test such as MUET, IELTS or TOEFL. Check the official table for the exact scores.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="container section">
+      <h2 data-i18n="adm.know.h">Good to Know</h2>
+      <div class="grid-3">
+        <div class="info-box">
+          <h3 data-i18n="adm.know.1.h">Programme-specific requirements</h3>
+          <p data-i18n="adm.know.1.p">Some programmes, such as Medicine (MBBS), Nursing and Chinese-language programmes, have additional requirements.</p>
+        </div>
+        <div class="info-box">
+          <h3 data-i18n="adm.know.2.h">Other qualifications</h3>
+          <p data-i18n="adm.know.2.p">Other qualifications, for example a diploma from a college or polytechnic, are considered case by case.</p>
+        </div>
+        <div class="info-box">
+          <h3 data-i18n="adm.know.3.h">Credit transfer</h3>
+          <p data-i18n="adm.know.3.p">To apply for credit transfer, include certified copies of your academic transcripts, programme structure and course syllabus.</p>
+        </div>
+      </div>
+      <p class="source" data-i18n="adm.source">Source:
+        <a href="https://admission.utar.edu.my/Entry-Qualifications-and-English-Language-Requirements.php" target="_blank" rel="noopener">UTAR Entry Qualifications &amp; English Language Requirements ↗</a>
+        · Last checked: 2 November 2026. Requirements may change; always confirm on the official page.</p>
     </section>
 
     <section class="container section" id="tools">
-      <h2>Admission Tools</h2>
+      <h2 data-i18n="adm.tools.h">Admission Tools</h2>
       <div class="grid-3">
         <article class="module-card" data-module="Admission Requirement Explainer">
           <span class="m-icon">📖</span>
-          <h3>Admission Requirement Explainer</h3>
-          <p>See programme requirements explained in simple, plain-language points.</p>
-          <span class="m-link">Open →</span>
+          <h3 data-i18n="mod.explainer.title">Admission Requirement Explainer</h3>
+          <p data-i18n="mod.explainer.desc">See programme requirements explained in simple, plain-language points.</p>
+          <span class="m-link" data-i18n="open">Open →</span>
         </article>
         <article class="module-card" data-module="Smart Eligibility Checker">
           <span class="m-icon">✅</span>
-          <h3>Smart Eligibility Checker</h3>
-          <p>Enter your qualification and results to get an indicative eligibility result.</p>
-          <span class="m-link">Open →</span>
+          <h3 data-i18n="mod.checker.title">Smart Eligibility Checker</h3>
+          <p data-i18n="mod.checker.desc">Enter your qualification and results to get an indicative eligibility result.</p>
+          <span class="m-link" data-i18n="open">Open →</span>
         </article>
         <article class="module-card" data-module="Alternative Pathway Recommendation">
           <span class="m-icon">🧭</span>
-          <h3>Alternative Pathway Recommendation</h3>
-          <p>Discover other study routes if you do not meet a requirement yet.</p>
-          <span class="m-link">Open →</span>
+          <h3 data-i18n="mod.pathway.title">Alternative Pathway Recommendation</h3>
+          <p data-i18n="mod.pathway.desc">Discover other study routes if you do not meet a requirement yet.</p>
+          <span class="m-link" data-i18n="open">Open →</span>
         </article>
       </div>
     </section>
   </main>
 
   <div id="site-footer"></div>
+  <script src="js/i18n.js"></script>
   <script src="js/script.js"></script>
 </body>
 </html>

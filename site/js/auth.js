@@ -1,4 +1,5 @@
 // Login & sign-up form handling (front-end validation only).
+// Text comes from js/i18n.js (t() function), which must be loaded before this file.
 // TODO: send the form data to the Node.js backend (e.g. POST /api/login, POST /api/signup),
 // which will check or create the user in MySQL and store passwords in hashed form.
 
@@ -7,6 +8,10 @@ function nextPage() {
   const next = new URLSearchParams(location.search).get("next") || "";
   return /^[\w-]+\.html(#[\w-]+)?$/.test(next) ? next : "index.html";
 }
+
+// Language switcher and translated text
+document.querySelector(".auth-lang").innerHTML = langSwitchHtml();
+initI18n();
 
 // Keep the "next" page when switching between the login and sign-up pages.
 document.querySelectorAll('a[href="signup.html"], a[href="login.html"]').forEach(a => (a.href += location.search));
@@ -41,7 +46,7 @@ document.querySelectorAll(".pw-toggle").forEach(btn =>
     const input = document.getElementById(btn.dataset.target);
     const show = input.type === "password";
     input.type = show ? "text" : "password";
-    btn.textContent = show ? "Hide" : "Show";
+    btn.textContent = show ? t("auth.hide") : t("auth.show");
   })
 );
 
@@ -53,20 +58,20 @@ if (loginForm) {
     const email = loginForm.email.value.trim();
     const password = loginForm.password.value;
     const ok = [
-      setError(loginForm, "email", !email ? "Please enter your email." : !EMAIL_RE.test(email) ? "Please enter a valid email." : ""),
-      setError(loginForm, "password", !password ? "Please enter your password." : ""),
+      setError(loginForm, "email", !email ? t("auth.err.email") : !EMAIL_RE.test(email) ? t("auth.err.emailInvalid") : ""),
+      setError(loginForm, "password", !password ? t("auth.err.password") : ""),
     ].every(Boolean);
     if (!ok) return;
 
     // Prototype only: remember the user in the browser until the Node.js backend is ready.
     localStorage.setItem("uaa_user", JSON.stringify({ email, name: email.split("@")[0] }));
-    toast("Login successful. Redirecting…");
+    toast(t("auth.toast.login"));
     setTimeout(() => (location.href = nextPage()), 1000);
   });
 
   document.getElementById("forgotLink").addEventListener("click", e => {
     e.preventDefault();
-    toast("Password reset is under development.");
+    toast(t("auth.toast.forgot"));
   });
 }
 
@@ -81,15 +86,15 @@ if (signupForm) {
     const password = f.password.value;
     const confirm = f.confirm.value;
     const ok = [
-      setError(f, "name", !name ? "Please enter your full name." : ""),
-      setError(f, "email", !email ? "Please enter your email." : !EMAIL_RE.test(email) ? "Please enter a valid email." : ""),
-      setError(f, "password", password.length < 8 ? "Password must be at least 8 characters." : ""),
-      setError(f, "confirm", confirm !== password || !confirm ? "Passwords do not match." : ""),
-      setError(f, "agree", !f.agree.checked ? "Please tick this box to continue." : ""),
+      setError(f, "name", !name ? t("auth.err.name") : ""),
+      setError(f, "email", !email ? t("auth.err.email") : !EMAIL_RE.test(email) ? t("auth.err.emailInvalid") : ""),
+      setError(f, "password", password.length < 8 ? t("auth.err.pwLength") : ""),
+      setError(f, "confirm", confirm !== password || !confirm ? t("auth.err.pwMatch") : ""),
+      setError(f, "agree", !f.agree.checked ? t("auth.err.agree") : ""),
     ].every(Boolean);
     if (!ok) return;
 
-    toast("Account created (prototype). Please log in.");
+    toast(t("auth.toast.signup"));
     setTimeout(() => (location.href = "login.html" + location.search), 1200);
   });
 }

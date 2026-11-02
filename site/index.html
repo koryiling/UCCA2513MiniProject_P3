@@ -3,46 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Home | UTAR Admission Assistant</title>
+  <title data-i18n="title.home">Home | UTAR Admission Assistant</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="home">
   <div id="site-header"></div>
 
   <main>
-    <section class="hero">
+    <section class="hero hero-bg" role="img" aria-label="UTAR campus by the lake at dusk">
       <div class="container hero-inner">
         <div>
-          <h1>Your Future Starts Here</h1>
-          <p>Explore admission information and learn how to apply to UTAR.</p>
+          <h1 data-i18n="home.hero.title">Your Future Starts Here</h1>
+          <p data-i18n="home.hero.sub">Everything you need to know before joining UTAR: admission requirements, application steps, tuition fees, scholarships and student life, all in one place.</p>
           <div class="hero-actions">
-            <a href="admission.html" class="btn btn-dark">Explore Admission</a>
-            <button class="btn btn-outline" data-open-chat>Ask Assistant</button>
+            <a href="#quick" class="btn btn-dark" data-i18n="home.btn.start">Get Started</a>
+            <button class="btn btn-outline" data-open-chat data-i18n="home.btn.ask">Ask Assistant</button>
           </div>
-        </div>
-        <div class="hero-image" aria-hidden="true">
-          <svg viewBox="0 0 200 120"><circle cx="150" cy="30" r="12"/><path d="M10 110 L70 45 L110 85 L135 60 L190 110 Z"/></svg>
+          <nav class="hero-links" aria-label="Explore the site">
+            <a href="admission.html" data-i18n="nav.admission">Admission</a>
+            <a href="application.html" data-i18n="nav.application">Application</a>
+            <a href="fees.html" data-i18n="nav.fees">Tuition Fees</a>
+            <a href="scholarship.html" data-i18n="nav.scholarship">Scholarship Information</a>
+            <a href="student-life.html" data-i18n="nav.life">Student Life</a>
+          </nav>
         </div>
       </div>
     </section>
 
-    <section class="container section">
-      <h2>Quick Access</h2>
-      <div class="quick-grid">
-        <a class="quick" href="admission.html"><span>🎓</span>Admission Requirements</a>
-        <a class="quick" href="application.html"><span>📋</span>Application Procedure</a>
-        <a class="quick" href="admission.html#tools"><span>✅</span>Check My Eligibility</a>
-        <a class="quick" href="application.html#tools"><span>🗂️</span>Document Checklist</a>
-        <a class="quick" href="application.html#dates"><span>📅</span>Important Dates</a>
-        <a class="quick" href="fees.html"><span>💰</span>Tuition Fees</a>
-        <a class="quick" href="scholarship.html"><span>🏅</span>Scholarship Information</a>
-        <a class="quick" href="student-life.html"><span>🏫</span>Student Life</a>
-        <a class="quick" href="faq.html"><span>❓</span>FAQ</a>
+    <section class="container section" id="quick">
+      <h2 data-i18n="ov.h">Explore UTAR</h2>
+
+      <div class="facts">
+        <div class="fact"><b data-i18n="fact.intake.v">25 Jan 2027</b><span data-i18n="fact.intake">Next Foundation &amp; degree intake</span></div>
+        <div class="fact"><b data-i18n="fact.result.v">7 working days</b><span data-i18n="fact.result">Usual time to get your application result</span></div>
+        <div class="fact"><b data-i18n="fact.campus.v">2 campuses</b><span data-i18n="fact.campus">Kampar and Sungai Long</span></div>
+      </div>
+
+      <div class="ov-grid">
+        <article class="ov-card">
+          <div class="ov-head"><span class="ov-icon">🎓</span><h3><a href="admission.html" data-i18n="nav.admission">Admission</a></h3></div>
+          <p data-i18n="ov.adm">Accepted qualifications, English-language requirements and tools to check your eligibility.</p>
+          <div class="ov-links">
+            <a href="admission.html" data-i18n="quick.req">Admission Requirements</a>
+            <a href="admission.html#tools" data-i18n="quick.elig">Check My Eligibility</a>
+          </div>
+        </article>
+        <article class="ov-card">
+          <div class="ov-head"><span class="ov-icon">📋</span><h3><a href="application.html" data-i18n="nav.application">Application</a></h3><span class="ov-lock" data-i18n="ov.login">🔒 Login</span></div>
+          <p data-i18n="ov.app">Step-by-step application guide, upcoming intakes and the documents to prepare.</p>
+          <div class="ov-links">
+            <a href="application.html" data-i18n="quick.proc">Application Procedure</a>
+            <a href="application.html#dates" data-i18n="quick.dates">Important Dates</a>
+            <a href="application.html#tools" data-i18n="quick.docs">Document Checklist</a>
+          </div>
+        </article>
+        <article class="ov-card">
+          <div class="ov-head"><span class="ov-icon">💰</span><h3><a href="fees.html" data-i18n="nav.fees">Tuition Fees</a></h3></div>
+          <p data-i18n="ov.fees">An overview of programme fees by study level.</p>
+          <div class="ov-links"><a href="fees.html" data-i18n="ov.fees.l">View fees</a></div>
+        </article>
+        <article class="ov-card">
+          <div class="ov-head"><span class="ov-icon">🏅</span><h3><a href="scholarship.html" data-i18n="nav.scholarship">Scholarship Information</a></h3></div>
+          <p data-i18n="ov.sch">Scholarships and financial aid that can support your studies, and how to apply.</p>
+          <div class="ov-links"><a href="scholarship.html" data-i18n="ov.sch.l">View scholarships</a></div>
+        </article>
+        <article class="ov-card">
+          <div class="ov-head"><span class="ov-icon">🏫</span><h3><a href="student-life.html" data-i18n="nav.life">Student Life</a></h3></div>
+          <p data-i18n="ov.life">Get to know UTAR's campuses, faculties and facilities.</p>
+          <div class="ov-links">
+            <a href="student-life.html#campus" data-i18n="nav.campus">Campus</a>
+            <a href="student-life.html#faculty" data-i18n="nav.faculty">Faculty</a>
+            <a href="student-life.html#facilities" data-i18n="nav.facilities">Facilities</a>
+          </div>
+        </article>
+        <article class="ov-card">
+          <div class="ov-head"><span class="ov-icon">❓</span><h3><a href="faq.html" data-i18n="nav.faq">FAQ</a></h3></div>
+          <p data-i18n="ov.faq">Quick answers to common questions, or ask our assistant anytime.</p>
+          <div class="ov-links">
+            <a href="faq.html" data-i18n="ov.faq.l">Read FAQ</a>
+            <button type="button" data-open-chat data-i18n="home.btn.ask">Ask Assistant</button>
+          </div>
+        </article>
       </div>
     </section>
   </main>
 
   <div id="site-footer"></div>
+  <script src="js/i18n.js"></script>
   <script src="js/script.js"></script>
 </body>
 </html>
