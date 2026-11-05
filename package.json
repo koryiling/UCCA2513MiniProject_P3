@@ -1,0 +1,13 @@
+{
+  "name": "ucca2513-mini-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UTAR admission website prototype (UCCA2513 Mini Project)",
+  "scripts": {
+    "dev": "vite site --open",
+    "preview": "vite preview site"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  }
+}
