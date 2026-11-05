@@ -13,6 +13,7 @@ require("dotenv").config({ path: path.join(__dirname, ".env"), quiet: true });
 
 const INSTRUCTIONS_FILE = path.join(__dirname, "ai-instructions.md");
 const KNOWLEDGE_DIR = path.join(__dirname, "..", "knowledge");
+const SITE_DIR = path.join(__dirname, "..", "site");
 const LANG_NAMES = { en: "English", zh: "Chinese (Simplified)", ms: "Malay" };
 
 // Providers in the order they are tried. A provider is skipped if its settings are incomplete
@@ -34,8 +35,41 @@ function describe() {
   return providers().map(p => `${p.name}: ${p.model}`);
 }
 
+// Which website pages to send for each type of question (intent codes from chat_intents).
+// Admission and application facts are already in knowledge/, so those pages are not repeated.
+// Free AI plans limit how much text can be sent per minute, so only relevant pages are sent.
+const INTENT_PAGES = {
+  fees: ["fees.html"],
+  scholarship: ["scholarship.html"],
+  student_life: ["student-life.html"],
+  acceptance: ["fees.html"],
+};
+// Pages never sent: login/sign-up have no information, and the others are already covered
+// by the files in knowledge/ (update knowledge/ when these pages change).
+const NO_INFO_PAGES = ["login.html", "signup.html", "index.html", "admission.html", "application.html", "faq.html"];
+
+// The text of the chosen website pages, so the AI knows what they say (fees, scholarships,
+// student life, ...). Teammates' updates to these pages are picked up automatically.
+function readSitePages(names) {
+  return [...new Set(names)]
+    .filter(name => /^[\w-]+\.html$/.test(name) && !NO_INFO_PAGES.includes(name) && fs.existsSync(path.join(SITE_DIR, name)))
+    .map(name => {
+      const text = fs.readFileSync(path.join(SITE_DIR, name), "utf8")
+        .replace(/<(script|style|svg)[\s\S]*?<\/\1>/gi, " ")
+        .replace(/<\/(h[1-6]|p|li|tr|div|section|article)>/gi, "\n")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/[ \t]+/g, " ")
+        .replace(/\s*\n\s*/g, "\n")
+        .trim();
+      return `<page file="${name}">\n${text}\n</page>`;
+    })
+    .join("\n\n");
+}
+
 // Read the files on every request, so edits take effect without restarting the server.
-function buildSystemPrompt() {
+// pages: the website pages relevant to this question (see pagesFor).
+function buildSystemPrompt(pages) {
   const instructions = fs.readFileSync(INSTRUCTIONS_FILE, "utf8").trim();
   const files = fs.readdirSync(KNOWLEDGE_DIR)
     .filter(name => name.endsWith(".md") || name.endsWith(".txt"))
@@ -43,7 +77,14 @@ function buildSystemPrompt() {
   const knowledge = files
     .map(name => `<file name="${name}">\n${fs.readFileSync(path.join(KNOWLEDGE_DIR, name), "utf8").trim()}\n</file>`)
     .join("\n\n");
-  return `${instructions}\n\n<knowledge_base>\n${knowledge}\n</knowledge_base>`;
+  const pageText = readSitePages(pages);
+  return `${instructions}\n\n<knowledge_base>\n${knowledge}\n</knowledge_base>` +
+    (pageText ? `\n\n<website_pages>\n${pageText}\n</website_pages>` : "");
+}
+
+// The current page plus the pages linked to the question's topic.
+function pagesFor(currentPage, intent) {
+  return [currentPage, ...(INTENT_PAGES[intent] || [])].filter(Boolean);
 }
 
 async function callProvider(p, messages) {
@@ -68,16 +109,19 @@ async function callProvider(p, messages) {
 // history: earlier turns [{ role: "user" | "assistant", content: "..." }], already validated.
 // lang: reply language; sure = false means it is only the website's language, so the AI
 // should prefer the language the student actually wrote in.
+// page: the page the student is on (e.g. "fees.html"), so "this page" questions make sense.
+// intent: the question type found by the keyword rules, used to pick related pages.
 // Returns { text, model } from the first provider that answers; throws if all of them fail.
-async function ask(message, history, lang, sure) {
+async function ask(message, history, lang, sure, page, intent) {
   const langName = LANG_NAMES[lang] || "English";
-  // The language rule goes at the end of the system prompt: small models follow it there
-  // more reliably than a note added to the student's message.
+  // The page and language rules go at the end of the system prompt: small models follow them
+  // there more reliably than a note added to the student's message.
+  const pageNote = page ? `Current page: the student is on ${page}.` : "";
   const langRule = sure
     ? `Language: the student wrote in ${langName}. Write your whole answer in ${langName} only.`
     : `Language: write your whole answer in the same language as the student's latest message. If you cannot tell, use ${langName}.`;
   const messages = [
-    { role: "system", content: `${buildSystemPrompt()}\n\n${langRule}` },
+    { role: "system", content: `${buildSystemPrompt(pagesFor(page, intent))}\n\n${pageNote}\n${langRule}` },
     ...history,
     { role: "user", content: message },
   ];

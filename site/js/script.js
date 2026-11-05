@@ -111,11 +111,13 @@ function toast(text) {
 // with the rule-based answers in MySQL as a backup.
 // Start the backend with "npm start" and open http://localhost:3000.
 // history: earlier turns [{ role: "user" | "assistant", content: "plain text" }]
+// The current page name is sent too, so the assistant knows what "this page" means.
 async function askServer(message, lang, history) {
+  const page = location.pathname.split("/").pop() || "index.html";
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, lang, history }),
+    body: JSON.stringify({ message, lang, history, page }),
   });
   if (!res.ok) throw new Error("HTTP " + res.status);
   return res.json();
@@ -183,12 +185,15 @@ function renderChat() {
   quickReplies = document.createElement("div");
   quickReplies.className = "quick-replies";
   quickReplies.innerHTML = `<p>${t("chat.suggested")}</p>`;
-  ["chat.s1", "chat.s2", "chat.s3", "chat.s4"].forEach(key => {
+  // Each page has its own suggested questions (see "chat.q.<page>" in i18n.js); FAQ uses the home ones.
+  const pageQuestions = t(`chat.q.${document.body.dataset.page}`);
+  const suggestions = Array.isArray(pageQuestions) ? pageQuestions : t("chat.q.home");
+  suggestions.forEach(question => {
     const b = document.createElement("button");
     b.className = "chip";
     b.type = "button";
-    b.textContent = t(key);
-    b.addEventListener("click", () => ask(t(key)));
+    b.textContent = question;
+    b.addEventListener("click", () => ask(question));
     quickReplies.appendChild(b);
   });
   show(quickReplies);

@@ -73,7 +73,8 @@ async function getResponse(intentCode, lang) {
 // The AI answers first (main AI, then backup AI, as set in .env); the rule-based answer is the last backup.
 // pageLang is the language selected on the website, used when the message's language is unclear.
 // history holds earlier turns [{ role, content }] so the AI can follow up on them.
-async function reply(message, pageLang, history = []) {
+// page is the page the student is on (e.g. "fees.html").
+async function reply(message, pageLang, history = [], page = null) {
   if (!LANGS.includes(pageLang)) pageLang = "en";
   const { intent, langCounts } = await findIntent(message);
   const { lang, sure } = detectLang(message, langCounts, pageLang);
@@ -84,7 +85,7 @@ async function reply(message, pageLang, history = []) {
   let html;
   if (ai.isConfigured()) {
     try {
-      ({ text, model } = await ai.ask(message, history, lang, sure));
+      ({ text, model } = await ai.ask(message, history, lang, sure, page, intent));
       html = ai.toSafeHtml(text);
       source = "ai";
     } catch (err) {

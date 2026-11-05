@@ -40,6 +40,13 @@ const I18N = {
     "chat.s3": "What documents do I need?",
     "chat.s4": "When is the next intake?",
     "chat.offline": "Sorry, the assistant is not available right now. Please try again later.",
+    // Suggested chatbot questions for each page
+    "chat.q.home": ["What are the entry requirements?","How do I apply to UTAR?","How much are the tuition fees?","Are there scholarships?"],
+    "chat.q.admission": ["What are the entry requirements?","What English level do I need?","What if I don't meet the requirements?","How can I check my eligibility?"],
+    "chat.q.application": ["How do I apply to UTAR?","What documents do I need?","When is the next intake?","How do I track my application?"],
+    "chat.q.fees": ["How much are the tuition fees?","How do I pay after I get an offer?","Are there scholarships to help with fees?"],
+    "chat.q.scholarship": ["What scholarships are available?","How do I apply for a scholarship?","Who can apply for financial aid?"],
+    "chat.q.student-life": ["Where are UTAR's campuses?","What faculties does UTAR have?","Is there student accommodation?"],
 
     // Login & sign up
     "auth.err.email": "Please enter your email.",
@@ -85,6 +92,13 @@ const I18N = {
     "chat.s3": "需要准备什么文件？",
     "chat.s4": "下一次开课是什么时候？",
     "chat.offline": "抱歉，助理暂时无法使用，请稍后再试。",
+    // Suggested chatbot questions for each page
+    "chat.q.home": ["入学要求是什么？","怎样申请 UTAR？","学费多少钱？","有奖学金吗？"],
+    "chat.q.admission": ["入学要求是什么？","英文要达到什么程度？","不符合要求怎么办？","怎样检查我的资格？"],
+    "chat.q.application": ["怎样申请 UTAR？","需要准备什么文件？","下一次开课是什么时候？","怎样追踪我的申请进度？"],
+    "chat.q.fees": ["学费多少钱？","拿到录取后怎么缴费？","有奖学金可以帮忙付学费吗？"],
+    "chat.q.scholarship": ["有哪些奖学金？","怎样申请奖学金？","谁可以申请助学金？"],
+    "chat.q.student-life": ["UTAR 的校区在哪里？","UTAR 有哪些学院？","有学生宿舍吗？"],
 
     // Home
     "title.home": "首页 | UTAR 招生助理",
@@ -300,6 +314,13 @@ const I18N = {
     "chat.s3": "Apakah dokumen yang diperlukan?",
     "chat.s4": "Bilakah pengambilan seterusnya?",
     "chat.offline": "Maaf, pembantu tidak tersedia buat masa ini. Sila cuba lagi kemudian.",
+    // Suggested chatbot questions for each page
+    "chat.q.home": ["Apakah syarat kemasukan?","Bagaimana untuk memohon ke UTAR?","Berapakah yuran pengajian?","Adakah biasiswa disediakan?"],
+    "chat.q.admission": ["Apakah syarat kemasukan?","Apakah tahap Bahasa Inggeris yang diperlukan?","Bagaimana jika saya tidak memenuhi syarat?","Bagaimana untuk menyemak kelayakan saya?"],
+    "chat.q.application": ["Bagaimana untuk memohon ke UTAR?","Apakah dokumen yang diperlukan?","Bilakah pengambilan seterusnya?","Bagaimana untuk menjejak permohonan saya?"],
+    "chat.q.fees": ["Berapakah yuran pengajian?","Bagaimana membayar selepas menerima tawaran?","Adakah biasiswa untuk membantu yuran?"],
+    "chat.q.scholarship": ["Apakah biasiswa yang ada?","Bagaimana untuk memohon biasiswa?","Siapa yang boleh memohon bantuan kewangan?"],
+    "chat.q.student-life": ["Di manakah kampus UTAR?","Apakah fakulti yang ada di UTAR?","Adakah asrama pelajar disediakan?"],
 
     "title.home": "Laman Utama | Pembantu Kemasukan UTAR",
     "home.hero.title": "Masa Depan Anda Bermula Di Sini",

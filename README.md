@@ -50,6 +50,9 @@ The chatbot is an **AI chatbot with a rule-based backup**.
 2. **AI answer (if configured):** the backend sends the question to an AI model together with
    - `server/ai-instructions.md`: the assistant's role and rules (tone, topics, "never guess facts"), and
    - every `.md` / `.txt` file in `knowledge/`: the UTAR information the AI is allowed to use.
+   - the text of the website page the student is on, plus pages related to the question
+     (e.g. `fees.html` for fee questions). Pages already covered by `knowledge/` are not sent again
+     (see `INTENT_PAGES` and `NO_INFO_PAGES` in `server/ai.js`), because free AI plans limit how much text can be sent per minute.
 3. **Backup:** if no AI is set up, or the AI fails, the backend answers from the keywords and answers in MySQL
    (`chat_keywords`, `chat_responses`). If several question types match, the one with the highest `priority` wins.
 4. Every question is saved in `chat_logs`, with `source` = `ai` or `rules`.

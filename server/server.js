@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json({ limit: "100kb" }));
 app.use(express.static(path.join(__dirname, "..", "site")));
 
-// Chatbot: { "message": "How do I apply?", "lang": "en", "history": [...] }
+// Chatbot: { "message": "How do I apply?", "lang": "en", "history": [...], "page": "application.html" }
 //   -> { "source": "ai" | "rules", "intent": "apply_steps", "lang": "en", "reply": "<html>", "text": "..." }
 app.post("/api/chat", async (req, res) => {
   const message = typeof req.body?.message === "string" ? req.body.message.trim() : "";
@@ -23,12 +23,14 @@ app.post("/api/chat", async (req, res) => {
     .slice(-10)
     .map(m => ({ role: m.role, content: m.content.slice(0, 2000) }));
   while (history.length && history[0].role !== "user") history.shift();
+  // The page the student is asking from, e.g. "fees.html" (only plain page names are accepted)
+  const page = /^[\w-]+\.html$/.test(req.body?.page || "") ? req.body.page : null;
 
   if (!message || message.length > 500) {
     return res.status(400).json({ error: "Message must be between 1 and 500 characters." });
   }
   try {
-    res.json(await chatbot.reply(message, lang, history));
+    res.json(await chatbot.reply(message, lang, history, page));
   } catch (err) {
     console.error("Chatbot error:", err.message);
     res.status(500).json({ error: "The assistant is not available right now." });
