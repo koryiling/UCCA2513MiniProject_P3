@@ -39,6 +39,7 @@ const I18N = {
     "chat.s2": "How do I apply to UTAR?",
     "chat.s3": "What documents do I need?",
     "chat.s4": "When is the next intake?",
+    "chat.offline": "Sorry, the assistant is not available right now. Please try again later.",
 
     // Login & sign up
     "auth.err.email": "Please enter your email.",
@@ -83,6 +84,7 @@ const I18N = {
     "chat.s2": "怎样申请 UTAR？",
     "chat.s3": "需要准备什么文件？",
     "chat.s4": "下一次开课是什么时候？",
+    "chat.offline": "抱歉，助理暂时无法使用，请稍后再试。",
 
     // Home
     "title.home": "首页 | UTAR 招生助理",
@@ -297,6 +299,7 @@ const I18N = {
     "chat.s2": "Bagaimana untuk memohon ke UTAR?",
     "chat.s3": "Apakah dokumen yang diperlukan?",
     "chat.s4": "Bilakah pengambilan seterusnya?",
+    "chat.offline": "Maaf, pembantu tidak tersedia buat masa ini. Sila cuba lagi kemudian.",
 
     "title.home": "Laman Utama | Pembantu Kemasukan UTAR",
     "home.hero.title": "Masa Depan Anda Bermula Di Sini",

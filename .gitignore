@@ -1,2 +1,5 @@
 node_modules/
 dist/
+
+# Local settings with passwords - never commit
+.env

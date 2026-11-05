@@ -4,10 +4,17 @@
   "private": true,
   "description": "UTAR admission website prototype (UCCA2513 Mini Project)",
   "scripts": {
+    "start": "node server/server.js",
+    "db:setup": "node server/setup-db.js",
     "dev": "vite site --open",
     "preview": "vite preview site"
   },
   "devDependencies": {
     "vite": "^7.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "mysql2": "^3.24.6"
   }
 }
