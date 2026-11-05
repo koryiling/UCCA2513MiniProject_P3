@@ -47,9 +47,9 @@ INSERT INTO chat_intents (intent_id, intent_code, description, priority) VALUES
 -- ---------------------------------------------------------------------------
 INSERT INTO chat_keywords (intent_id, lang, keyword) VALUES
   -- 1 greeting
-  (1, 'en', 'hi'), (1, 'en', 'hello'), (1, 'en', 'hey'), (1, 'en', 'good morning'),
+  (1, 'en', 'hi'), (1, 'en', 'hello'), (1, 'en', 'hey'), (1, 'en', 'good morning'), (1, 'en', 'halo'),
   (1, 'zh', '你好'), (1, 'zh', '您好'), (1, 'zh', '哈喽'), (1, 'zh', '嗨'),
-  (1, 'ms', 'hai'), (1, 'ms', 'helo'), (1, 'ms', 'selamat pagi'), (1, 'ms', 'apa khabar'),
+  (1, 'ms', 'hai'), (1, 'ms', 'helo'), (1, 'ms', 'halo'), (1, 'ms', 'selamat pagi'), (1, 'ms', 'apa khabar'),
 
   -- 2 entry_requirements
   (2, 'en', 'requirement'), (2, 'en', 'entry'), (2, 'en', 'qualif'), (2, 'en', 'eligib'),

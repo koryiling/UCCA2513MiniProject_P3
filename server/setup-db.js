@@ -23,6 +23,15 @@ async function main() {
     console.log(`Ran database/${file}`);
   }
 
+  // Upgrade older databases: chat_logs.source was added later
+  const [cols] = await conn.query(
+    "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'chat_logs' AND COLUMN_NAME = 'source'"
+  );
+  if (!cols.length) {
+    await conn.query("ALTER TABLE chat_logs ADD COLUMN source ENUM('ai', 'rules') NOT NULL DEFAULT 'rules' AFTER intent_code");
+    console.log("Added chat_logs.source column");
+  }
+
   const [[counts]] = await conn.query(
     `SELECT (SELECT COUNT(*) FROM chat_intents)   AS intents,
             (SELECT COUNT(*) FROM chat_keywords)  AS keywords,

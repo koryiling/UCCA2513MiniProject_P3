@@ -44,7 +44,12 @@ function renderLayout() {
 
   document.getElementById("site-header").outerHTML = `
     <header class="site-header">
-      <div class="top-bar"><div class="container">${langSwitchHtml()}</div></div>
+      <div class="top-bar"><div class="container">
+        ${user
+          ? `<span class="user-menu"><span class="user-name">${t("user.hi")} ${escapeHtml(user.name)}</span><button type="button" id="logoutBtn">${t("user.logout")}</button></span>`
+          : ""}
+        ${langSwitchHtml()}
+      </div></div>
       <div class="container header-inner">
         <a href="index.html" class="brand">
           <img class="logo" src="images/logo.jpg" alt="UTAR logo">
@@ -54,9 +59,6 @@ function renderLayout() {
         <nav class="main-nav">
           ${nav.map(navItem).join("")}
         </nav>
-        ${user
-          ? `<span class="user-menu"><span class="user-name">${t("user.hi")} ${escapeHtml(user.name)}</span><button class="btn btn-outline" id="logoutBtn">${t("user.logout")}</button></span>`
-          : ""}
       </div>
     </header>`;
 
@@ -105,33 +107,36 @@ function toast(text) {
 }
 
 // ---------- Chatbot (pop-up window) ----------
-// Answers come from the Node.js backend (POST /api/chat), which looks them up in MySQL.
+// Answers come from the Node.js backend (POST /api/chat): an AI model reads our knowledge files,
+// with the rule-based answers in MySQL as a backup.
 // Start the backend with "npm start" and open http://localhost:3000.
-async function askServer(message, lang) {
+// history: earlier turns [{ role: "user" | "assistant", content: "plain text" }]
+async function askServer(message, lang, history) {
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, lang }),
+    body: JSON.stringify({ message, lang, history }),
   });
   if (!res.ok) throw new Error("HTTP " + res.status);
-  return (await res.json()).reply;
+  return res.json();
 }
 
 function renderChat() {
   const lang = getLang();
   const wrap = document.createElement("div");
   wrap.innerHTML = `
-    <div class="chat-popup" id="chat" aria-hidden="true">
+    <div class="chat-popup" id="chat" role="dialog" aria-label="${t("chat.title")}" aria-hidden="true">
       <div class="chat-head">
         <span class="bot-avatar">🤖</span>
-        <strong>${t("chat.title")}</strong>
-        <span class="status"><i></i>${t("chat.online")}</span>
+        <div class="chat-title">
+          <strong>${t("chat.title")}</strong>
+          <span class="status"><i></i>${t("chat.online")}</span>
+        </div>
         <button class="chat-close" aria-label="Close chat">✕</button>
       </div>
-      <div class="chat-body" id="chatBody"></div>
-      <div class="chat-suggest" id="chatSuggest"><p>${t("chat.suggested")}</p></div>
+      <div class="chat-body" id="chatBody" aria-live="polite"></div>
       <form class="chat-input" id="chatForm" autocomplete="off">
-        <input id="chatInput" type="text" placeholder="${t("chat.placeholder")}" aria-label="Your question">
+        <input id="chatInput" type="text" maxlength="500" placeholder="${t("chat.placeholder")}" aria-label="Your question">
         <button type="submit" class="send" aria-label="Send">➤</button>
       </form>
     </div>
@@ -139,34 +144,54 @@ function renderChat() {
   document.body.append(...wrap.children);
 
   const chat = document.getElementById("chat");
+  const fab = document.querySelector(".chat-fab");
   const body = document.getElementById("chatBody");
   const input = document.getElementById("chatInput");
 
+  const show = el => { body.appendChild(el); body.scrollTop = body.scrollHeight; return el; };
   const add = (html, who) => {
     const div = document.createElement("div");
     div.className = `msg ${who}`;
     if (who === "user") div.textContent = html; else div.innerHTML = html;
-    body.appendChild(div);
-    body.scrollTop = body.scrollHeight;
-  };
-  const ask = async q => {
-    if (!q.trim()) return;
-    add(q, "user");
-    try {
-      add(await askServer(q, lang), "bot");
-    } catch {
-      add(t("chat.offline"), "bot");
-    }
+    return show(div);
   };
 
+  // Suggested questions sit under the welcome message and disappear after the first question.
+  let quickReplies = null;
+  const history = []; // conversation so far, sent to the AI so it can answer follow-up questions
+  const ask = async q => {
+    q = q.trim();
+    if (!q) return;
+    if (quickReplies) { quickReplies.remove(); quickReplies = null; }
+    add(q, "user");
+    const typing = add('<span class="typing"><i></i><i></i><i></i></span>', "bot");
+    typing.classList.add("is-typing");
+    let answer;
+    try {
+      const data = await askServer(q, lang, history);
+      answer = data.reply;
+      history.push({ role: "user", content: q }, { role: "assistant", content: data.text });
+      history.splice(0, Math.max(0, history.length - 10)); // keep the last 5 questions and answers
+    } catch {
+      answer = t("chat.offline");
+    }
+    typing.remove();
+    add(answer, "bot");
+  };
+
+  add(t("chat.welcome"), "bot");
+  quickReplies = document.createElement("div");
+  quickReplies.className = "quick-replies";
+  quickReplies.innerHTML = `<p>${t("chat.suggested")}</p>`;
   ["chat.s1", "chat.s2", "chat.s3", "chat.s4"].forEach(key => {
     const b = document.createElement("button");
     b.className = "chip";
     b.type = "button";
     b.textContent = t(key);
     b.addEventListener("click", () => ask(t(key)));
-    document.getElementById("chatSuggest").appendChild(b);
+    quickReplies.appendChild(b);
   });
+  show(quickReplies);
 
   document.getElementById("chatForm").addEventListener("submit", e => {
     e.preventDefault();
@@ -174,13 +199,19 @@ function renderChat() {
     input.value = "";
   });
 
-  const open = () => { chat.classList.add("open"); chat.setAttribute("aria-hidden", "false"); input.focus(); };
+  const setOpen = isOpen => {
+    chat.classList.toggle("open", isOpen);
+    chat.setAttribute("aria-hidden", String(!isOpen));
+    fab.classList.toggle("open", isOpen);
+    fab.textContent = isOpen ? "✕" : "💬";
+    fab.setAttribute("aria-label", isOpen ? "Close chat" : "Open chat");
+    if (isOpen) input.focus();
+  };
   document.querySelectorAll("[data-open-chat]").forEach(btn =>
-    btn.addEventListener("click", () => (chat.classList.contains("open") ? chat.classList.remove("open") : open()))
+    btn.addEventListener("click", () => setOpen(!chat.classList.contains("open")))
   );
-  chat.querySelector(".chat-close").addEventListener("click", () => chat.classList.remove("open"));
-
-  add(t("chat.welcome"), "bot");
+  chat.querySelector(".chat-close").addEventListener("click", () => setOpen(false));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") setOpen(false); });
 }
 
 // ---------- Module cards (module pages not built yet) ----------

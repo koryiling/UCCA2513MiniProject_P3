@@ -1,10 +1,11 @@
 # UTAR Admission Assistant (UCCA2513 Mini Project)
 
-A website and rule-based chatbot that helps students find UTAR admission information.
+A website and AI chatbot (with a rule-based backup) that helps students find UTAR admission information.
 
 - **Frontend:** HTML, CSS, JavaScript (`site/`)
 - **Backend:** Node.js with Express (`server/`)
 - **Database:** MySQL 8 (`database/`)
+- **AI:** any OpenAI-compatible AI API (e.g. Google Gemini, Groq or Ollama), with a rule-based backup
 - **Languages:** English, Chinese, Malay
 
 ## First-time setup
@@ -28,28 +29,46 @@ A website and rule-based chatbot that helps students find UTAR admission informa
 |---|---|
 | `npm start` | Runs the website and API at http://localhost:3000 (chatbot works) |
 | `npm run db:setup` | Creates the tables and reloads the chatbot data (safe to run again) |
-| `npm run dev` | Frontend-only preview with Vite (the chatbot will not answer, because there is no backend) |
+| `npm run dev` | Frontend preview with Vite; chat requests go to the backend, so run `npm start` too |
 
 ## Project structure
 
 ```
 site/        Website pages, CSS, JavaScript, images
   js/i18n.js   All Chinese and Malay translations
-server/      Node.js backend (server.js, db.js, chatbot.js, setup-db.js)
+server/      Node.js backend (server.js, db.js, chatbot.js, ai.js, setup-db.js, ai-instructions.md)
+knowledge/   UTAR information files the AI reads
 database/    schema.sql (tables) and seed.sql (chatbot questions and answers)
 wireframe/   Low-fidelity wireframe
 ```
 
 ## How the chatbot works
 
-1. The browser sends the question and the current language to `POST /api/chat`.
-2. The backend checks the message against the keywords in `chat_keywords`.
-   If several question types match, the one with the highest `priority` wins.
-3. It returns the answer from `chat_responses` in that language and records the question in `chat_logs`.
+The chatbot is an **AI chatbot with a rule-based backup**.
 
-**To add or change an answer:** edit `database/seed.sql`, then run `npm run db:setup`.
-Questions the chatbot could not answer are saved in `chat_logs` with `intent_code = 'fallback'`:
+1. The browser sends the question, the current language and the last few messages to `POST /api/chat`.
+2. **AI answer (if configured):** the backend sends the question to an AI model together with
+   - `server/ai-instructions.md`: the assistant's role and rules (tone, topics, "never guess facts"), and
+   - every `.md` / `.txt` file in `knowledge/`: the UTAR information the AI is allowed to use.
+3. **Backup:** if no AI is set up, or the AI fails, the backend answers from the keywords and answers in MySQL
+   (`chat_keywords`, `chat_responses`). If several question types match, the one with the highest `priority` wins.
+4. Every question is saved in `chat_logs`, with `source` = `ai` or `rules`.
+
+### Set up the AI (free options)
+
+Fill in `AI_BASE_URL`, `AI_API_KEY` and `AI_MODEL` in `server/.env`, then restart with `npm start`.
+Any provider with an OpenAI-compatible API works, so you can switch provider by editing `.env` only.
+`server/.env.example` has ready-made settings for Google Gemini, Groq and Ollama.
+Check http://localhost:3000/api/health to see which AI model is active.
+
+### Customize the chatbot
+
+- **Change how it behaves:** edit `server/ai-instructions.md` (takes effect on the next question, no restart needed).
+- **Teach it new information:** add or edit files in `knowledge/`, e.g. `knowledge/fees.md`. Only put in facts from official UTAR sources.
+- **Change the backup answers:** edit `database/seed.sql`, then run `npm run db:setup`.
+
+Questions the rule-based backup could not match are saved with `intent_code = 'fallback'`:
 
 ```sql
-SELECT user_message, lang, created_at FROM chat_logs WHERE intent_code = 'fallback' ORDER BY created_at DESC;
+SELECT user_message, lang, source, created_at FROM chat_logs WHERE intent_code = 'fallback' ORDER BY created_at DESC;
 ```

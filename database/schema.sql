@@ -45,12 +45,14 @@ CREATE TABLE IF NOT EXISTS chat_responses (
   CONSTRAINT fk_response_intent FOREIGN KEY (intent_id) REFERENCES chat_intents (intent_id) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
--- Chatbot: every question asked and which intent answered it ('fallback' = not understood).
+-- Chatbot: every question asked, the matching intent ('fallback' = not understood by the rules)
+-- and who answered it (source: 'ai' = AI model, 'rules' = rule-based backup).
 -- Useful for finding questions the chatbot cannot answer yet.
 CREATE TABLE IF NOT EXISTS chat_logs (
   log_id        INT AUTO_INCREMENT PRIMARY KEY,
   lang          ENUM('en', 'zh', 'ms') NOT NULL,
   user_message  VARCHAR(500) NOT NULL,
   intent_code   VARCHAR(50)  NOT NULL,
+  source        ENUM('ai', 'rules') NOT NULL DEFAULT 'rules',
   created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
