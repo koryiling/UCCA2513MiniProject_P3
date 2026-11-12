@@ -3,8 +3,9 @@
 // Text comes from js/i18n.js (t() function), which must be loaded before this file.
 
 // ---------- Login state ----------
-// Prototype only: the logged-in user is kept in localStorage.
-// In the full system the Node.js backend will manage login sessions.
+// The backend keeps the login session in a cookie (server/auth.js). The browser also keeps the student's
+// name in localStorage, only to show it in the header and to send logged-out visitors to the login page quickly;
+// the application pages still check the session with the server.
 function getUser() {
   try { return JSON.parse(localStorage.getItem("uaa_user")); } catch { return null; }
 }
@@ -62,8 +63,24 @@ function renderLayout() {
       </div>
     </header>`;
 
+  // Official contact details of UTAR's Division of Admissions and Credit Evaluation (DACE),
+  // from https://admission.utar.edu.my/Contact-Us.php
+  const campus = (name, tel, ext, hotline) => `<div>
+      <strong>${name}</strong>
+      <span>${t("contact.tel")}: <a href="tel:${tel.replace(/[^+\d]/g, "")}">${tel}</a> Ext. ${ext}</span>
+      <span>${t("contact.hotline")}: <a href="tel:${hotline.replace(/[^+\d]/g, "")}">${hotline}</a></span>
+    </div>`;
   document.getElementById("site-footer").outerHTML = `
     <footer class="site-footer">
+      <div class="container footer-contact" id="contact">
+        <div class="contact-intro">
+          <h2>${t("contact.h")}</h2>
+          <p>${t("contact.hours")}</p>
+          <p>${t("contact.email")}: <a href="mailto:admission@utar.edu.my">admission@utar.edu.my</a></p>
+        </div>
+        ${campus(t("contact.kampar"), "+605-468 8888", "2240 / 2241", "+6016-223 3562")}
+        ${campus(t("contact.sl"), "+603-9086 0288", "837 / 838 / 839 / 840", "+6018-295 3100")}
+      </div>
       <div class="container footer-center">
         <p class="footer-copy">© ${new Date().getFullYear()} UNIVERSITI TUNKU ABDUL RAHMAN <em>DU012(A).</em></p>
         <p class="footer-owner">${t("footer.owner")} <em>(200201010564(578227-M))</em>
@@ -81,7 +98,8 @@ function renderLayout() {
     </footer>`;
 
   const logout = document.getElementById("logoutBtn");
-  if (logout) logout.addEventListener("click", () => {
+  if (logout) logout.addEventListener("click", async () => {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
     localStorage.removeItem("uaa_user");
     location.href = "index.html";
   });
@@ -216,10 +234,13 @@ function renderChat() {
     btn.addEventListener("click", () => setOpen(!chat.classList.contains("open")))
   );
   chat.querySelector(".chat-close").addEventListener("click", () => setOpen(false));
+  // Other scripts can open the chat with a question, e.g. "Ask the assistant" on the admission tools
+  window.askAssistant = question => { setOpen(true); ask(question); };
   document.addEventListener("keydown", e => { if (e.key === "Escape") setOpen(false); });
 }
 
-// ---------- Module cards (module pages not built yet) ----------
+// ---------- Module cards whose pages are not built yet ----------
+// (Cards for finished tools are plain links, e.g. the admission tools.)
 function bindModuleCards() {
   const user = getUser();
   document.querySelectorAll("[data-module]").forEach(card =>

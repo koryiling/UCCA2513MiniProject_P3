@@ -1,16 +1,23 @@
 // Backend for the UTAR Admission Assistant.
 // - Serves the website in ../site
 // - POST /api/chat: chatbot answers from the MySQL database
+// - GET /api/admission-data, POST /api/eligibility, POST /api/pathways: admission tools
+// - /api/auth/...: sign up, log in, log out (server/auth.js)
+// - /api/app/...: application tools for logged-in students (server/application.js)
 //
 // Start with:  npm start   then open http://localhost:3000
 const path = require("path");
 const express = require("express");
 const pool = require("./db");
 const chatbot = require("./chatbot");
+const eligibility = require("./eligibility");
+const auth = require("./auth");
+const applicationTools = require("./application");
 
 const app = express();
 app.use(express.json({ limit: "100kb" }));
 app.use(express.static(path.join(__dirname, "..", "site")));
+app.use("/api", auth.loadUser); // sets req.user for logged-in students
 
 // Chatbot: { "message": "How do I apply?", "lang": "en", "history": [...], "page": "application.html" }
 //   -> { "source": "ai" | "rules", "intent": "apply_steps", "lang": "en", "reply": "<html>", "text": "..." }
@@ -37,6 +44,29 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+// Admission tools (see server/eligibility.js). Bad input gets a 400 with the reason.
+const toolRoute = handler => async (req, res) => {
+  try {
+    res.json(await handler(req.body));
+  } catch (err) {
+    if (err.code) {
+      console.error("Admission tools error:", err.message);
+      return res.status(500).json({ error: "The admission tools are not available right now." });
+    }
+    res.status(400).json({ error: err.message });
+  }
+};
+// Programmes, requirements, grade scales and questions for the Explainer, Checker and Pathway pages
+app.get("/api/admission-data", toolRoute(() => eligibility.publicData()));
+// { programmeId, qualification, results: [{ subject, grade }] | cgpa, answers: {...} } -> { verdict, items, ... }
+app.post("/api/eligibility", toolRoute(body => eligibility.check(body)));
+// { qualification, results | cgpa, answers, programmeId? } -> { target, options }
+app.post("/api/pathways", toolRoute(body => eligibility.pathways(body)));
+
+// Accounts and the application tools
+app.use("/api/auth", auth.router);
+app.use("/api/app", applicationTools);
+
 // Quick check that the server can reach the database: http://localhost:3000/api/health
 app.get("/api/health", async (req, res) => {
   try {
@@ -45,6 +75,12 @@ app.get("/api/health", async (req, res) => {
   } catch (err) {
     res.status(500).json({ status: "error", database: err.code || "not connected" });
   }
+});
+
+// Unexpected errors (e.g. database down) in the account and application routes
+app.use("/api", (err, req, res, next) => {
+  console.error("API error:", err.message);
+  res.status(500).json({ error: "Something went wrong. Please try again later." });
 });
 
 const port = Number(process.env.PORT) || 3000;

@@ -38,9 +38,46 @@ site/        Website pages, CSS, JavaScript, images
   js/i18n.js   All Chinese and Malay translations
 server/      Node.js backend (server.js, db.js, chatbot.js, ai.js, setup-db.js, ai-instructions.md)
 knowledge/   UTAR information files the AI reads
-database/    schema.sql (tables) and seed.sql (chatbot questions and answers)
+database/    schema.sql (tables), seed.sql (chatbot), programmes.sql (entry requirements), application.sql (checklist items, journey steps, intake dates)
 wireframe/   Low-fidelity wireframe
 ```
+
+## Admission tools
+
+Three pages, open to everyone (linked from the Admission page):
+
+| Page | Tool |
+|---|---|
+| `explainer.html` | Admission Requirement Explainer: a programme's minimum entry requirements in simple points |
+| `eligibility.html` | Smart Eligibility Checker: indicative result for one programme from the student's grades or CGPA |
+| `pathway.html` | Alternative Pathway Recommendation: every programme the student may enter, plus the Foundation route |
+
+- **Data:** `database/programmes.sql` (tables `requirement_groups`, `programmes`, `entry_requirements`), taken from UTAR's official
+  Minimum Entry Requirements documents. 35 programmes so far; add more there and run `npm run db:setup`.
+- **Logic:** `server/eligibility.js` (grade scales, questions and rule codes such as `math_credit_mec`), API `GET /api/admission-data`,
+  `POST /api/eligibility`, `POST /api/pathways`.
+- **Page code and text:** `site/js/admission-tools.js` and `site/js/i18n-tools.js` (English, Chinese, Malay).
+- Results are guidance only; nothing the student enters is saved on the server.
+
+## Accounts and application tools
+
+Students sign up and log in on `login.html` (one page with a sliding sign-in / sign-up panel; `signup.html` redirects to it).
+Only the Application section needs an account.
+
+- **Accounts:** `server/auth.js`, API `/api/auth/signup`, `/login`, `/logout`, `/me`. Passwords are stored as salted scrypt hashes;
+  the login session is a random token in an HttpOnly cookie, and only its SHA-256 hash is stored (table `sessions`).
+  "Remember me" keeps the student logged in for 30 days, otherwise until the browser is closed (at most 1 day).
+- **Tools** (login required, `server/application.js`, API under `/api/app/...`):
+
+| Page | Tool | Saved in |
+|---|---|---|
+| `checklist.html` | Personalized Document Checklist, from UTAR's Application Checklist | `user_profiles`, `checklist_progress` |
+| `tracker.html` | Application Journey Tracker, 8 steps from exploring to orientation | `journey_progress` |
+| `dates.html` | Application Date & Reminder: intakes, countdowns, own reminders, calendar (.ics) download | `user_reminders` |
+
+- `application.html` shows a "My progress" summary (`GET /api/app/dashboard`).
+- Checklist items, journey steps and intake dates are in `database/application.sql`; their text is in `site/js/i18n-app.js`.
+- The tools are the student's own records and are not connected to UTAR's official application system.
 
 ## How the chatbot works
 

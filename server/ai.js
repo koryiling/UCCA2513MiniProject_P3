@@ -46,7 +46,9 @@ const INTENT_PAGES = {
 };
 // Pages never sent: login/sign-up have no information, and the others are already covered
 // by the files in knowledge/ (update knowledge/ when these pages change).
-const NO_INFO_PAGES = ["login.html", "signup.html", "index.html", "admission.html", "application.html", "faq.html"];
+const NO_INFO_PAGES = ["login.html", "signup.html", "index.html", "admission.html", "application.html", "faq.html",
+  "explainer.html", "eligibility.html", "pathway.html", "checklist.html", "tracker.html", "dates.html"];
+// (the tool pages are filled in by JavaScript; they are described in knowledge/website-guide.md)
 
 // The text of the chosen website pages, so the AI knows what they say (fees, scholarships,
 // student life, ...). Teammates' updates to these pages are picked up automatically.

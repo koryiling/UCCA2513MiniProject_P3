@@ -13,6 +13,36 @@ DACE in Chinese: 招生与学分评估部 (DACE). In Malay: Bahagian Kemasukan d
 - Credit transfer: include certified copies of academic transcripts, programme structure and course syllabus with the application.
 - Official page: https://admission.utar.edu.my/Entry-Qualifications-and-English-Language-Requirements.php
 
+## Programmes with extra requirements
+Source: UTAR Minimum Entry Requirements, October 2026 (https://admission.utar.edu.my/Undergraduate-Programmes-by-Clusters-MER.php).
+- Medicine (MBBS), October intake only:
+  - STPM / A-Level: BBB, ABC or AAC in Biology, Chemistry, and Physics or Mathematics (STPM: or CGPA 3.00 in these 3 subjects).
+  - UEC: B4 or better in Biology, Chemistry, Physics, Advanced Mathematics (I) and Advanced Mathematics (II).
+  - Foundation in Science / Matriculation / Pre-Medical (at least 1 year): CGPA 3.50 and GPA 3.00 in Biology, Chemistry, and Physics or Mathematics, plus at least 5 Bs in SPM (Biology, Chemistry, Physics, Mathematics or Additional Mathematics, and English).
+  - English (Malaysian applicants): MUET Band 4.0, IELTS 6.0, or Grade A in SPM 1119 / O-Level / UEC English.
+  - Shortlisted applicants must pass an admissions interview. You must be at least 18 years old, and get a credit in SPM Bahasa Melayu within your first 2 years of study.
+- Nursing, June and October intakes only:
+  - STPM: CGPA 2.00. A-Level: CGPA 2.50 and Grade C in 3 subjects. Foundation / Matriculation, or a Diploma in any field: CGPA 2.50.
+  - UEC: B6 or better in 5 subjects, plus SPM credits in Bahasa Melayu, Mathematics and 1 Science subject.
+  - A credit in SPM Bahasa Melayu. IGCSE / O-Level candidates need Grade C in 5 subjects, and local candidates also need a credit in Malay (First Language).
+  - English: MUET Band 3 or IELTS 5.5 (or equivalent), as set by the Malaysian Nursing Board.
+  - You must be at least 18 years old and declare your health status when you enrol.
+- Bachelor of Arts (Honours) Chinese Studies and Applied Chinese Language:
+  - Results: STPM Grade C in 2 subjects, A-Level Grade D in 2 subjects, UEC Grade B in 5 subjects, or Foundation / Matriculation / Diploma with CGPA 2.00.
+  - A credit in SPM Chinese. It can be replaced by a credit in O-Level or UEC Chinese, a pass in STPM Chinese, New HSK Level 5 (195 marks or more) or TOCFL Level 4.
+  - English: a pass in SPM English is enough for Malaysian applicants.
+
+## Credit transfer and other qualifications
+Source: https://admission.utar.edu.my/Credit-Transfer.php
+- A diploma from a college, institution or polytechnic, or another qualification not listed above, can still be used to apply. Each application is considered case by case.
+- Successful applicants may be admitted with credit transfer, so they do not have to repeat courses they have already passed.
+- Knowledge from work or informal training can be recognised through APEL.C (credit award for prior experiential learning).
+- Who can apply: students with a diploma or higher qualification (including an incomplete degree) from an accredited programme.
+- How: apply together with your admission application and attach your official transcripts, programme structure / course syllabus and certificate. Without these documents, your application is processed as a normal admission. You can also apply to your Faculty General Office within your first trimester.
+- Each course needs grade C or better (B for English courses), at least 80% similar content and learning outcomes, and the same or a higher credit value.
+- Limits: from a diploma to a degree, 30% to 50% of the total credits; from one degree to another, you must study at least one long trimester at UTAR (Engineering and Quantity Surveying: up to 50%).
+- Fee: RM100 for each course approved for credit transfer (advanced standing fee), added to your student bill.
+
 ## English-language requirement
 - Most programmes require a credit or a relevant score in English.
 - Foundation: applicants below the requirement may get a conditional offer and must join the English Enhancement Programme (EEP) and pass EEP Level 7 within the first two trimesters. Applicants whose previous qualification was taught fully in English are exempted, but still need at least a pass in SPM English or equivalent.
@@ -40,6 +70,13 @@ DACE in Chinese: 招生与学分评估部 (DACE). In Malay: Bahagian Kemasukan d
 - Medicine (MBBS): one intake per year, in October. The next date has not been announced yet.
 - Application closing dates are not published for most programmes.
 - Official calendar: https://admission.utar.edu.my/intake-and-Academic-Calendar.php
+
+## Contact UTAR Admissions (DACE)
+Source: https://admission.utar.edu.my/Contact-Us.php (checked 12 November 2026). Office hours: Monday to Friday, 8.30 am to 5.30 pm, except public holidays.
+- Email: admission@utar.edu.my
+- Kampar Campus (A006, Ground Floor, Heritage Hall, Jalan Universiti, Bandar Barat, 31900 Kampar, Perak): Tel +605-468 8888 Ext. 2240 / 2241, Hotline +6016-223 3562
+- Sungai Long Campus (KB001, Ground Floor, KB Block, Jalan Sungai Long, Bandar Sungai Long, Cheras, 43000 Kajang, Selangor): Tel +603-9086 0288 Ext. 837 / 838 / 839 / 840, Hotline +6018-295 3100
+- The contact details are also at the bottom of every page of this website.
 
 ## Campuses
 - UTAR has two campuses: Kampar and Sungai Long.

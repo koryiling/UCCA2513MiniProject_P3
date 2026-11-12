@@ -11,6 +11,7 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || "utar_admission",
   charset: "utf8mb4",
+  dateStrings: true, // DATE columns come back as "YYYY-MM-DD" text, not time-zone-shifted Date objects
   connectionLimit: 10,
 });
 

@@ -7,45 +7,99 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="auth-page">
-  <div class="auth-card">
-    <aside class="auth-side">
-      <a href="index.html"><img src="images/logo.jpg" alt="UTAR logo" class="auth-logo"></a>
-      <h2 data-i18n="auth.side.title">UTAR Admission Assistant</h2>
-      <p data-i18n="auth.login.side">Log in to access the Application section: your document checklist, application journey tracker and deadline reminders.</p>
-    </aside>
+  <div class="auth-wrap">
+    <div class="auth-top">
+      <a href="index.html" class="back-link" data-i18n="auth.back">← Back to Home</a>
+      <div class="auth-lang"></div>
+    </div>
 
-    <section class="auth-main">
-      <div class="auth-top">
-        <a href="index.html" class="back-link" data-i18n="auth.back">← Back to Home</a>
-        <div class="auth-lang"></div>
+    <!-- Sign in and sign up share one card; the blue panel slides across to switch between them.
+         Add the class "signup" to #authCard to show the sign-up side. -->
+    <div class="auth-slider" id="authCard">
+
+      <!-- Sign up -->
+      <div class="form-box sign-up-box">
+        <form id="signupForm" novalidate>
+          <img src="images/logo.jpg" alt="UTAR logo" class="auth-logo-mobile">
+          <h1 data-i18n="auth.signup.h">Create an account</h1>
+          <p class="auth-sub" data-i18n="auth.signup.sub">Sign up in a few seconds</p>
+
+          <input name="name" type="text" placeholder="Full name" data-i18n-placeholder="auth.name" autocomplete="name" aria-label="Full name">
+          <small class="error" data-for="name"></small>
+
+          <input name="email" type="email" placeholder="Email" data-i18n-placeholder="auth.email" autocomplete="email" aria-label="Email">
+          <small class="error" data-for="email"></small>
+
+          <div class="pw-wrap">
+            <input id="signupPassword" name="password" type="password" placeholder="Password (at least 8 characters)" data-i18n-placeholder="auth.ph.newPassword" autocomplete="new-password" aria-label="Password">
+            <button type="button" class="pw-toggle" data-target="signupPassword" data-i18n="auth.show">Show</button>
+          </div>
+          <small class="error" data-for="password"></small>
+
+          <div class="pw-wrap">
+            <input id="signupConfirm" name="confirm" type="password" placeholder="Confirm password" data-i18n-placeholder="auth.confirm" autocomplete="new-password" aria-label="Confirm password">
+            <button type="button" class="pw-toggle" data-target="signupConfirm" data-i18n="auth.show">Show</button>
+          </div>
+          <small class="error" data-for="confirm"></small>
+
+          <label class="check"><input type="checkbox" name="agree"> <span data-i18n="auth.agree">I understand this system provides guidance only and is not an official UTAR application.</span></label>
+          <small class="error" data-for="agree"></small>
+
+          <button type="submit" class="btn btn-dark btn-block" data-i18n="auth.signup.btn">Sign Up</button>
+          <p class="auth-switch"><span data-i18n="auth.haveAccount">Already have an account?</span> <a href="#login" data-mode="login" data-i18n="auth.loginLink">Log in</a></p>
+        </form>
       </div>
-      <img src="images/logo.jpg" alt="UTAR logo" class="auth-logo-mobile">
-      <h1 data-i18n="auth.login.h">Welcome back</h1>
-      <p class="auth-sub" data-i18n="auth.login.sub">Log in to continue to the Application section</p>
 
-      <form id="loginForm" novalidate>
-        <label for="email" data-i18n="auth.email">Email</label>
-        <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email">
-        <small class="error" data-for="email"></small>
+      <!-- Sign in -->
+      <div class="form-box sign-in-box">
+        <form id="loginForm" novalidate>
+          <img src="images/logo.jpg" alt="UTAR logo" class="auth-logo-mobile">
+          <h1 data-i18n="auth.login.h">Welcome back</h1>
+          <p class="auth-sub" data-i18n="auth.login.sub">Log in to continue to the Application section</p>
 
-        <label for="password" data-i18n="auth.password">Password</label>
-        <div class="pw-wrap">
-          <input id="password" name="password" type="password" placeholder="Enter your password" data-i18n-placeholder="auth.ph.password" autocomplete="current-password">
-          <button type="button" class="pw-toggle" data-target="password" data-i18n="auth.show">Show</button>
+          <input name="email" type="email" placeholder="Email" data-i18n-placeholder="auth.email" autocomplete="email" aria-label="Email">
+          <small class="error" data-for="email"></small>
+
+          <div class="pw-wrap">
+            <input id="loginPassword" name="password" type="password" placeholder="Password" data-i18n-placeholder="auth.password" autocomplete="current-password" aria-label="Password">
+            <button type="button" class="pw-toggle" data-target="loginPassword" data-i18n="auth.show">Show</button>
+          </div>
+          <small class="error" data-for="password"></small>
+
+          <div class="auth-row">
+            <label class="check"><input type="checkbox" name="remember"> <span data-i18n="auth.remember">Remember me</span></label>
+            <a href="#" id="forgotLink" data-i18n="auth.forgot">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn btn-dark btn-block" data-i18n="auth.login.btn">Login</button>
+          <p class="auth-switch"><span data-i18n="auth.noAccount">Don't have an account?</span> <a href="#signup" data-mode="signup" data-i18n="auth.signupLink">Sign up</a></p>
+          <p class="auth-guest"><a href="index.html" data-i18n="auth.guest">Continue as guest</a></p>
+        </form>
+      </div>
+
+      <!-- Sliding blue panel -->
+      <div class="toggle-box" aria-hidden="false">
+        <div class="toggle">
+          <div class="toggle-panel toggle-left">
+            <img src="images/logo.jpg" alt="UTAR logo" class="auth-logo">
+            <h2 data-i18n="auth.panel.loginH">Welcome back!</h2>
+            <p data-i18n="auth.login.side">Log in to access the Application section: your document checklist, application journey tracker and deadline reminders.</p>
+            <button type="button" class="btn-ghost" data-mode="login" data-i18n="auth.loginLink">Log in</button>
+          </div>
+          <div class="toggle-panel toggle-right">
+            <img src="images/logo.jpg" alt="UTAR logo" class="auth-logo">
+            <h2 data-i18n="auth.panel.signupH">New to the Application section?</h2>
+            <p data-i18n="auth.signup.side">Create a free account to save your progress as you prepare your UTAR application.</p>
+            <ul class="auth-perks">
+              <li data-i18n="auth.perk1">Personalized document checklist</li>
+              <li data-i18n="auth.perk2">Application journey tracker</li>
+              <li data-i18n="auth.perk3">Deadline reminders</li>
+            </ul>
+            <button type="button" class="btn-ghost" data-mode="signup" data-i18n="auth.signupLink">Sign up</button>
+          </div>
         </div>
-        <small class="error" data-for="password"></small>
-
-        <div class="auth-row">
-          <label class="check"><input type="checkbox" name="remember"> <span data-i18n="auth.remember">Remember me</span></label>
-          <a href="#" id="forgotLink" data-i18n="auth.forgot">Forgot password?</a>
-        </div>
-
-        <button type="submit" class="btn btn-dark btn-block" data-i18n="auth.login.btn">Login</button>
-      </form>
-
-      <p class="auth-switch"><span data-i18n="auth.noAccount">Don't have an account?</span> <a href="signup.html" data-i18n="auth.signupLink">Sign up</a></p>
-      <p class="auth-guest"><a href="index.html" data-i18n="auth.guest">Continue as guest</a></p>
-    </section>
+      </div>
+    </div>
   </div>
 
   <script src="js/i18n.js"></script>

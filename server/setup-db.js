@@ -1,5 +1,5 @@
-// Creates the tables and loads the chatbot data:  npm run db:setup
-// Runs database/schema.sql and then database/seed.sql using the settings in server/.env.
+// Creates the tables and loads the chatbot and programme data:  npm run db:setup
+// Runs database/schema.sql, seed.sql, programmes.sql and application.sql using the settings in server/.env.
 // The database and the utar_app user must already exist (see README.md).
 const fs = require("fs");
 const path = require("path");
@@ -17,7 +17,7 @@ async function main() {
     multipleStatements: true,
   });
 
-  for (const file of ["schema.sql", "seed.sql"]) {
+  for (const file of ["schema.sql", "seed.sql", "programmes.sql", "application.sql"]) {
     const sql = fs.readFileSync(path.join(__dirname, "..", "database", file), "utf8");
     await conn.query(sql);
     console.log(`Ran database/${file}`);
@@ -38,6 +38,15 @@ async function main() {
             (SELECT COUNT(*) FROM chat_responses) AS responses`
   );
   console.log(`Chatbot data loaded: ${counts.intents} intents, ${counts.keywords} keywords, ${counts.responses} responses`);
+  const [[programmes]] = await conn.query(
+    `SELECT (SELECT COUNT(*) FROM programmes) AS programmes, (SELECT COUNT(*) FROM entry_requirements) AS requirements`
+  );
+  console.log(`Programme data loaded: ${programmes.programmes} programmes, ${programmes.requirements} entry requirements`);
+  const [[app]] = await conn.query(
+    `SELECT (SELECT COUNT(*) FROM checklist_items) AS items, (SELECT COUNT(*) FROM journey_stages) AS stages,
+            (SELECT COUNT(*) FROM important_dates) AS dates`
+  );
+  console.log(`Application tools data loaded: ${app.items} checklist items, ${app.stages} journey stages, ${app.dates} dates`);
   await conn.end();
 }
 

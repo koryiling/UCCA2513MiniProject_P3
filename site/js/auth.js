@@ -1,7 +1,7 @@
-// Login & sign-up form handling (front-end validation only).
+// Login & sign-up form handling.
+// The forms are checked here first, then sent to the Node.js backend (POST /api/auth/login, /api/auth/signup,
+// see server/auth.js), which checks or creates the account in MySQL and sets the login cookie.
 // Text comes from js/i18n.js (t() function), which must be loaded before this file.
-// TODO: send the form data to the Node.js backend (e.g. POST /api/login, POST /api/signup),
-// which will check or create the user in MySQL and store passwords in hashed form.
 
 // Only allow redirects back to a page of this site (e.g. "application.html#tools").
 function nextPage() {
@@ -13,14 +13,25 @@ function nextPage() {
 document.querySelector(".auth-lang").innerHTML = langSwitchHtml();
 initI18n();
 
-// Keep the "next" page when switching between the login and sign-up pages.
-document.querySelectorAll('a[href="signup.html"], a[href="login.html"]').forEach(a => (a.href += location.search));
+// Sign in and sign up are on one card: "#signup" in the address shows the sign-up side.
+const card = document.getElementById("authCard");
+function setMode(mode) {
+  card.classList.toggle("signup", mode === "signup");
+  history.replaceState(null, "", location.search + (mode === "signup" ? "#signup" : ""));
+}
+document.querySelectorAll("[data-mode]").forEach(el =>
+  el.addEventListener("click", e => { e.preventDefault(); setMode(el.dataset.mode); }));
+if (location.hash === "#signup") {
+  card.classList.add("no-anim"); // open on the sign-up side without sliding
+  setMode("signup");
+  requestAnimationFrame(() => requestAnimationFrame(() => card.classList.remove("no-anim")));
+}
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function setError(form, field, message) {
   const el = form.querySelector(`.error[data-for="${field}"]`);
-  const input = form.querySelector(`#${field}`);
+  const input = form.querySelector(`[name="${field}"]`);
   if (el) el.textContent = message || "";
   if (input) input.classList.toggle("invalid", Boolean(message));
   return !message;
@@ -40,6 +51,23 @@ function toast(text) {
   toast.t = setTimeout(() => el.classList.remove("show"), 2200);
 }
 
+// Sends the form to the backend. Returns { ok, status, data }.
+async function postAuth(url, body) {
+  try {
+    const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    return { ok: res.ok, status: res.status, data: await res.json().catch(() => ({})) };
+  } catch {
+    return { ok: false, status: 0, data: {} };
+  }
+}
+
+// Logged in: keep the name for the header, then go back to the page the student came from
+function loggedIn(user) {
+  localStorage.setItem("uaa_user", JSON.stringify(user));
+  toast(t("auth.toast.login"));
+  setTimeout(() => (location.href = nextPage()), 800);
+}
+
 // Show / hide password
 document.querySelectorAll(".pw-toggle").forEach(btn =>
   btn.addEventListener("click", () => {
@@ -53,7 +81,7 @@ document.querySelectorAll(".pw-toggle").forEach(btn =>
 // Login
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
-  loginForm.addEventListener("submit", e => {
+  loginForm.addEventListener("submit", async e => {
     e.preventDefault();
     const email = loginForm.email.value.trim();
     const password = loginForm.password.value;
@@ -63,10 +91,12 @@ if (loginForm) {
     ].every(Boolean);
     if (!ok) return;
 
-    // Prototype only: remember the user in the browser until the Node.js backend is ready.
-    localStorage.setItem("uaa_user", JSON.stringify({ email, name: email.split("@")[0] }));
-    toast(t("auth.toast.login"));
-    setTimeout(() => (location.href = nextPage()), 1000);
+    const button = loginForm.querySelector("button[type=submit]");
+    button.disabled = true;
+    const { ok: success, data } = await postAuth("/api/auth/login", { email, password, remember: loginForm.remember.checked });
+    button.disabled = false;
+    if (success) return loggedIn(data.user);
+    setError(loginForm, "password", data.error === "wrong_login" ? t("auth.err.wrongLogin") : t("auth.err.server"));
   });
 
   document.getElementById("forgotLink").addEventListener("click", e => {
@@ -78,7 +108,7 @@ if (loginForm) {
 // Sign up
 const signupForm = document.getElementById("signupForm");
 if (signupForm) {
-  signupForm.addEventListener("submit", e => {
+  signupForm.addEventListener("submit", async e => {
     e.preventDefault();
     const f = signupForm;
     const name = f.name.value.trim();
@@ -94,7 +124,13 @@ if (signupForm) {
     ].every(Boolean);
     if (!ok) return;
 
-    toast(t("auth.toast.signup"));
-    setTimeout(() => (location.href = "login.html" + location.search), 1200);
+    // The new account is logged in straight away
+    const button = f.querySelector("button[type=submit]");
+    button.disabled = true;
+    const { ok: success, data } = await postAuth("/api/auth/signup", { name, email, password });
+    button.disabled = false;
+    if (success) return loggedIn(data.user);
+    if (data.error === "email_taken") setError(f, "email", t("auth.err.emailTaken"));
+    else setError(f, "agree", t("auth.err.server"));
   });
 }

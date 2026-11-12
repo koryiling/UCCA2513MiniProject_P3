@@ -18,6 +18,9 @@
       </div>
     </section>
 
+    <!-- Filled in by initDashboard() for the logged-in student -->
+    <section class="container section dashboard" id="dashboard"></section>
+
     <section class="container section">
       <h2 data-i18n="app.steps.h">Application Steps</h2>
       <ol class="steps steps-detail">
@@ -76,30 +79,33 @@
     <section class="container section" id="tools">
       <h2 data-i18n="app.tools.h">Application Tools</h2>
       <div class="grid-3">
-        <article class="module-card" data-module="Personalized Document Checklist">
+        <a class="module-card" href="checklist.html">
           <span class="m-icon">🗂️</span>
           <h3 data-i18n="mod.checklist.title">Personalized Document Checklist</h3>
           <p data-i18n="mod.checklist.desc">Get a checklist of supporting documents for your situation.</p>
           <span class="m-link" data-i18n="open">Open →</span>
-        </article>
-        <article class="module-card" data-module="Application Journey Tracker">
+        </a>
+        <a class="module-card" href="tracker.html">
           <span class="m-icon">📍</span>
           <h3 data-i18n="mod.tracker.title">Application Journey Tracker</h3>
           <p data-i18n="mod.tracker.desc">Follow each stage of your application and record your progress.</p>
           <span class="m-link" data-i18n="open">Open →</span>
-        </article>
-        <article class="module-card" data-module="Application Date &amp; Reminder">
+        </a>
+        <a class="module-card" href="dates.html">
           <span class="m-icon">📅</span>
           <h3 data-i18n="mod.dates.title">Application Date &amp; Reminder</h3>
           <p data-i18n="mod.dates.desc">View important intake dates and get reminders of upcoming deadlines.</p>
           <span class="m-link" data-i18n="open">Open →</span>
-        </article>
+        </a>
       </div>
     </section>
   </main>
 
   <div id="site-footer"></div>
   <script src="js/i18n.js"></script>
+  <script src="js/i18n-app.js"></script>
   <script src="js/script.js"></script>
+  <script src="js/application-tools.js"></script>
+  <script>initDashboard();</script>
 </body>
 </html>
