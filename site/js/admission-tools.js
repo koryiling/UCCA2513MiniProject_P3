@@ -6,7 +6,9 @@
 
 const QUAL_ORDER = ["spm", "olevel", "uec", "stpm", "alevel", "foundation", "diploma"];
 // Questions are asked in this order
-const QUESTION_ORDER = ["study_field", "fis_subjects", "math_sci", "cs_maths", "spm_math", "spm_physics", "spm_english"];
+const QUESTION_ORDER = ["study_field", "stpm_cgpa", "fis_subjects", "cs_maths", "found_bio2", "mbbs_found_gpa", "mbbs_spm_5b",
+  "mbbs_dip_spm", "spm_math", "spm_physics", "spm_science", "spm_math_sci_other", "spm_2sci_math", "spm_bm_math_sci", "cm_spm",
+  "spm_art", "spm_bm", "spm_chinese", "bm_or_english", "spm_english", "muet3", "english_high"];
 const SAVED_INPUT = "uaa_tool_input"; // the student's results, kept for this browser tab only
 // Subjects already filled in when a qualification is chosen (the student can change them)
 const STARTER_SUBJECTS = {
@@ -36,7 +38,9 @@ async function postJson(url, body) {
 const groupByCode = code => DATA.groups.find(g => g.code === code);
 const groupOfProgramme = id => DATA.groups.find(g => g.programmes.some(p => p.id === Number(id)));
 const programmeById = id => DATA.groups.flatMap(g => g.programmes).find(p => p.id === Number(id));
-const programmeCount = () => DATA.groups.reduce((n, g) => n + g.programmes.length, 0);
+// The website offers Bachelor's degrees; Foundation programmes are only used as the route for SPM / O-Level students
+const degreeGroups = () => DATA.groups.filter(g => g.level === "bachelor");
+const programmeCount = () => degreeGroups().reduce((n, g) => n + g.programmes.length, 0);
 
 // Shows a message instead of the tool when the backend cannot be reached.
 function showUnavailable(root) {
@@ -45,7 +49,7 @@ function showUnavailable(root) {
 
 // <select> of programmes, grouped by level and requirement group
 function fillProgrammeSelect(select, placeholderKey) {
-  const options = DATA.groups.map(g => `<optgroup label="${escapeHtml(t("lvl." + g.level) + " · " + t("grp." + g.code))}">
+  const options = degreeGroups().map(g => `<optgroup label="${escapeHtml(t("grp." + g.code))}">
       ${g.programmes.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join("")}
     </optgroup>`).join("");
   select.innerHTML = `<option value="">${t(placeholderKey)}</option>${options}`;
@@ -58,8 +62,9 @@ function questionsFor(groups, qualification) {
     const rows = g.requirements.filter(r => r.qualification === qualification);
     if (!rows.length) continue;
     if (rows.some(r => r.field)) codes.add("study_field");
-    rows.forEach(r => r.rules.forEach(rule => codes.add(DATA.rules[rule].question)));
-    codes.add(DATA.rules[g.englishRule].question);
+    // Rules without a question are checked from the subjects or apply to everyone
+    rows.forEach(r => r.rules.forEach(rule => DATA.rules[rule].question && codes.add(DATA.rules[rule].question)));
+    if (g.englishRule !== "none") codes.add(DATA.rules[g.englishRule].question);
   }
   const derived = DATA.derived[qualification] || [];
   return QUESTION_ORDER.filter(q => codes.has(q) && !derived.includes(q));
@@ -127,7 +132,7 @@ function buildResultsForm(box, questionCodes) {
       <div class="question" data-q="${q}">
         <p>${t("qq." + q)}</p>
         ${DATA.questions[q].map(o => `<label class="option">
-          <input type="radio" name="q_${q}" value="${o}"${answers[q] === o ? " checked" : ""}> <span>${t(`qq.${q}.${o}`)}</span></label>`).join("")}
+          <input type="radio" name="q_${q}" value="${o}"${answers[q] === o ? " checked" : ""}> <span>${t(`qq.${q}.${o}`, t("opt." + o))}</span></label>`).join("")}
       </div>`).join("");
     questions.querySelectorAll("input[type=radio]").forEach(r =>
       r.addEventListener("change", () => { answers[r.name.slice(2)] = r.value; }));
@@ -230,9 +235,10 @@ function requirementLines(group, row) {
   if (row.minGrade) {
     const credit = (row.qualification === "spm" || row.qualification === "olevel") && row.minGrade === "C";
     lines.push(fmt(t(credit ? "ex.credits" : "ex.grades"), { grade: row.minGrade, count: row.minSubjects }));
-  } else {
+  } else if (row.minCgpa != null) {
     lines.push(fmt(t("ex.cgpa"), { min: row.minCgpa.toFixed(2) }));
-    if (row.reviewCgpa != null) lines.push(fmt(t("ex.review"), { review: row.reviewCgpa.toFixed(2) }));
+    if (row.reviewCgpa) lines.push(fmt(t("ex.review"), { review: row.reviewCgpa.toFixed(2) }));
+    else if (row.reviewCgpa === 0) lines.push(t("ex.reviewAny"));
   }
   row.rules.forEach(rule => lines.push(t("ex." + rule)));
   return lines;
@@ -256,10 +262,10 @@ function explainerHtml(programme) {
         <tbody>
           ${rows.map(r => `<tr><th scope="row">${label(r)}</th>
             <td><ul>${requirementLines(group, r).map(l => `<li>${escapeHtml(l)}</li>`).join("")}</ul></td></tr>`).join("")}
-          <tr><th scope="row">${t("ex.english")}</th><td>${t("ex." + group.englishRule)}</td></tr>
+          ${group.englishRule === "none" ? "" : `<tr><th scope="row">${t("ex.english")}</th><td>${t("ex." + group.englishRule)}</td></tr>`}
         </tbody>
       </table>
-      ${foundation ? `<p class="tip">${fmt(t("ex.spmNote"), { foundation: `<a class="text-link" href="explainer.html?p=${foundation.programmes[0].id}">${escapeHtml(foundation.programmes[0].name)}</a>` })}</p>` : ""}
+      ${foundation ? `<p class="tip">${fmt(t("ex.spmNote"), { foundation: `<b>${escapeHtml(t("grp." + foundation.code))}</b>` })}</p>` : ""}
       <p class="tool-note">${t("ex.other")}</p>
       <p class="source">${t("tools.source")} <a href="${group.sourceUrl}" target="_blank" rel="noopener">${t("tools.official")} ↗</a></p>
       <div class="tool-actions">

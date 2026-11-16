@@ -35,43 +35,150 @@ const SCIENCE_SUBJECTS = [...NATURAL_SCIENCES, "science"];
 // Lowest credit and lowest pass grade, for SPM-level results (UEC "Grade B" counts as a credit)
 const CREDIT = { spm: "C", olevel: "C", uec: "B6" };
 const PASS = { spm: "E", olevel: "E", uec: "C8" };
-// Questions answered from the subjects the student entered, so they are not asked
+// Questions answered from the subjects the student entered (SPM, O-Level and UEC are SPM-level results),
+// so they are not asked
+const SPM_LEVEL = ["spm_math", "spm_english", "spm_physics", "fis_subjects", "spm_art", "spm_bm", "spm_chinese",
+  "spm_science", "bm_or_english", "spm_math_sci_other", "cm_spm", "spm_2sci_math"];
 const DERIVED = {
-  spm: ["spm_math", "spm_english", "spm_physics", "fis_subjects", "math_sci"],
-  olevel: ["spm_math", "spm_english", "spm_physics", "fis_subjects", "math_sci"],
-  uec: ["spm_math", "spm_english", "spm_physics", "fis_subjects", "math_sci"],
-  stpm: ["math_sci"],
-  alevel: ["math_sci"],
+  spm: [...SPM_LEVEL, "spm_bm_math_sci"],
+  olevel: [...SPM_LEVEL, "spm_bm_math_sci"],
+  uec: SPM_LEVEL, // Nursing asks UEC students about their SPM results
 };
 
 // Questions the student answers besides their grades. The options are answer codes;
-// the text of each question and option is in site/js/i18n-tools.js.
+// the text of each question and option is in site/js/i18n-tools.js ("qq.<question>").
+const YES_NO = ["yes", "no"];
 const QUESTIONS = {
   spm_english: ["credit", "pass", "none"],
   spm_math: ["credit", "pass", "none"],
   spm_physics: ["pass", "none"],
-  math_sci: ["yes", "no"],
-  fis_subjects: ["yes", "no"],
+  spm_science: ["credit", "none"],
+  spm_bm: ["credit", "none"],
+  spm_chinese: ["credit", "pass", "none"],
+  spm_art: ["credit", "none"],
+  bm_or_english: YES_NO,
+  fis_subjects: YES_NO,
   cs_maths: ["subjects", "addmath", "math_sci", "none"],
+  spm_math_sci_other: YES_NO,
+  spm_2sci_math: YES_NO,
+  spm_bm_math_sci: YES_NO,
+  cm_spm: YES_NO,
+  stpm_cgpa: ["ge300", "ge250", "ge200", "lt200"],
+  english_high: YES_NO,
+  muet3: YES_NO,
+  found_bio2: YES_NO,
+  mbbs_found_gpa: YES_NO,
+  mbbs_spm_5b: YES_NO,
+  mbbs_dip_spm: YES_NO,
   study_field: ["science", "computing", "business", "arts", "other"],
 };
 
+// ---------- Checks on the subjects entered ----------
+// True if the student has one of these subjects with grade minGrade or better
+function hasSubject(input, subjects, minGrade) {
+  const scale = SCALES[input.qualification];
+  return input.results.some(r => subjects.includes(r.subject) && scale.indexOf(r.grade) <= scale.indexOf(minGrade));
+}
+function countSubjects(input, subjects, minGrade) {
+  const scale = SCALES[input.qualification];
+  return input.results.filter(r => (!subjects || subjects.includes(r.subject)) && scale.indexOf(r.grade) <= scale.indexOf(minGrade)).length;
+}
+const graded = input => input.results.length > 0;
+
+// Biology, Chemistry, Physics / Mathematics: how many of these three are at minGrade or better
+function bioChemPhysMath(input, minGrade) {
+  return [["biology"], ["chemistry"], ["physics", ...MATH_SUBJECTS]].filter(set => hasSubject(input, set, minGrade)).length;
+}
+
+// MBBS: STPM BBB / ABC / AAC (average grade point 3.00) in Biology, Chemistry and Physics or Mathematics;
+// A-Level the same grades; UEC B4 in Biology, Chemistry, Physics and both Advanced Mathematics papers.
+const STPM_POINTS = { A: 4, "A-": 3.67, "B+": 3.33, B: 3, "B-": 2.67, "C+": 2.33, C: 2 };
+const ALEVEL_POINTS = { "A*": 3, A: 3, B: 2, C: 1 };
+function mbbsSubjects(input) {
+  const best = (subjects, points) => Math.max(0, ...input.results.filter(r => subjects.includes(r.subject)).map(r => points[r.grade] || 0));
+  const three = points => [best(["biology"], points), best(["chemistry"], points), best(["physics", ...MATH_SUBJECTS], points)];
+  if (input.qualification === "stpm") {
+    const p = three(STPM_POINTS);
+    return p.every(x => x > 0) && p.reduce((a, b) => a + b) / 3 >= 3 ? "yes" : "no";
+  }
+  if (input.qualification === "alevel") {
+    const p = three(ALEVEL_POINTS);
+    return p.every(x => x > 0) && p.reduce((a, b) => a + b) >= 6 ? "yes" : "no";
+  }
+  if (input.qualification === "uec") {
+    return ["biology", "chemistry", "physics", "math", "addmath"].every(sub => hasSubject(input, [sub], "B4")) ? "yes" : "no";
+  }
+  return "no";
+}
+
+// Grade at which a Mathematics subject in the main qualification replaces the SPM Mathematics credit (Finance)
+const MATH_WAIVER = { stpm: "C", alevel: "D", uec: "B6" };
+
 // Extra conditions used in entry_requirements.rules and requirement_groups.english_rule.
-// For each answer: "ok", ["cond", message] (admitted with a condition, e.g. the Mathematics
-// Enhancement Course) or ["fail", message] (requirement not met). Messages are translated on the page.
+//   question: the question whose answer decides the outcome (null when the rule needs no question)
+//   compute(input, row): works the answer out from the subjects entered; when it returns undefined,
+//                        the answer to the question is used instead
+//   always: an outcome that applies to everyone (e.g. a portfolio or an interview)
+//   <answer>: "ok", ["cond", message] (admitted with a condition, e.g. the Mathematics Enhancement Course)
+//             or ["fail", message] (requirement not met). Messages are translated on the page ("res.<message>").
 const RULES = {
+  // Mathematics and Science
   math_credit_mec: { question: "spm_math", credit: "ok", pass: ["cond", "mec"], none: ["fail", "math_pass"] },
   math_credit:     { question: "spm_math", credit: "ok", pass: ["fail", "math_credit"], none: ["fail", "math_credit"] },
   math_pass_mec:   { question: "spm_math", credit: "ok", pass: "ok", none: ["cond", "mec"] },
+  fin_math:        { question: "spm_math", credit: "ok", pass: ["fail", "fin_math"], none: ["fail", "fin_math"],
+                     compute: input => (graded(input) && hasSubject(input, MATH_SUBJECTS, MATH_WAIVER[input.qualification]) ? "credit" : undefined) },
+  math_subject:    { question: null, yes: "ok", no: ["fail", "math_subject"],
+                     compute: (input, row) => (hasSubject(input, MATH_SUBJECTS, row.minGrade) ? "yes" : "no") },
+  math_sci:        { question: null, yes: "ok", no: ["fail", "math_sci"],
+                     compute: (input, row) => (hasSubject(input, MATH_SUBJECTS, row.minGrade) && hasSubject(input, NATURAL_SCIENCES, row.minGrade) ? "yes" : "no") },
+  cs_maths:        { question: "cs_maths", subjects: "ok", addmath: "ok", math_sci: ["cond", "mec"], none: ["fail", "cs_maths"],
+                     compute: (input, row) => (graded(input) && row.minGrade && hasSubject(input, MATH_SUBJECTS, row.minGrade)
+                       && hasSubject(input, [...SCIENCE_SUBJECTS, "computing"], row.minGrade) ? "subjects" : undefined) },
   physics_pass:    { question: "spm_physics", pass: "ok", none: ["fail", "physics_pass"] },
-  math_sci:        { question: "math_sci", yes: "ok", no: ["fail", "math_sci"] },
+  physics_subject: { question: null, yes: "ok", no: ["cond", "physics_faculty"],
+                     compute: (input, row) => (hasSubject(input, ["physics"], row.minGrade) ? "yes" : "no") },
   fis_subjects:    { question: "fis_subjects", yes: "ok", no: ["fail", "fis_subjects"] },
-  cs_maths:        { question: "cs_maths", subjects: "ok", addmath: "ok", math_sci: ["cond", "mec"], none: ["fail", "cs_maths"] },
-  // English
+  science_credit:  { question: "spm_science", credit: "ok", none: ["fail", "science_credit"] },
+  science_credit_osh: { question: "spm_science", credit: "ok", none: ["cond", "science_course"] },
+  biotech_spm:     { question: "spm_math_sci_other", yes: "ok", no: ["fail", "biotech_spm"] },
+  cm_spm:          { question: "cm_spm", yes: "ok", no: ["fail", "cm_spm"] },
+  // Health sciences
+  med3_subjects:   { question: null, yes: "ok", no: ["fail", "med3_subjects"],
+                     compute: (input, row) => (bioChemPhysMath(input, row.minGrade) >= 2 ? "yes" : "no") },
+  found_bio2:      { question: "found_bio2", yes: "ok", no: ["fail", "found_bio2"] },
+  tcm_sci:         { question: "spm_2sci_math", yes: "ok", no: ["fail", "tcm_sci"],
+                     compute: (input, row) => (countSubjects(input, SCIENCE_SUBJECTS, row.minGrade) >= 2 ? "yes" : undefined) },
+  spm_2sci_math:   { question: "spm_2sci_math", yes: "ok", no: ["fail", "tcm_found"] },
+  stpm_cgpa_200:   { question: "stpm_cgpa", ge300: "ok", ge250: "ok", ge200: "ok", lt200: ["fail", "stpm_cgpa_200"] },
+  stpm_cgpa_250:   { question: "stpm_cgpa", ge300: "ok", ge250: "ok", ge200: ["fail", "stpm_cgpa_250"], lt200: ["fail", "stpm_cgpa_250"] },
+  mbbs_subjects:   { question: null, yes: "ok", no: ["fail", "mbbs_subjects"], compute: input => mbbsSubjects(input) },
+  mbbs_found:      { question: "mbbs_found_gpa", yes: "ok", no: ["fail", "mbbs_found"] },
+  mbbs_spm5b:      { question: "mbbs_spm_5b", yes: "ok", no: ["fail", "mbbs_spm5b"] },
+  mbbs_dip_spm:    { question: "mbbs_dip_spm", yes: "ok", no: ["fail", "mbbs_dip_spm"] },
+  mbbs_english:    { question: "english_high", yes: "ok", no: ["fail", "mbbs_english"] },
+  muet3:           { question: "muet3", yes: "ok", no: ["fail", "muet3"] },
+  bm_credit:       { question: "spm_bm", credit: "ok", none: ["fail", "bm_credit"] },
+  nursing_uec_spm: { question: "spm_bm_math_sci", yes: "ok", no: ["fail", "nursing_uec_spm"] },
+  // Languages
+  eng_credit_req:  { question: "spm_english", credit: "ok", pass: ["fail", "eng_credit_req"], none: ["fail", "eng_credit_req"] },
+  english_high:    { question: "english_high", yes: "ok", no: ["fail", "english_high"] },
+  bm_or_english:   { question: "bm_or_english", yes: "ok", no: ["fail", "bm_or_english"] },
+  chinese_credit:  { question: "spm_chinese", credit: "ok", pass: ["fail", "chinese_credit"], none: ["fail", "chinese_credit"] },
+  chinese_pass:    { question: "spm_chinese", credit: "ok", pass: "ok", none: ["cond", "chinese_interview"] },
+  // Portfolios, tests and interviews that apply to every applicant of the programme
+  art_portfolio:   { question: "spm_art", credit: "ok", none: ["cond", "portfolio_arch"] },
+  portfolio:       { question: null, always: ["cond", "portfolio_art"] },
+  logic_test:      { question: null, always: ["cond", "logic_test"] },
+  interview_gc:    { question: null, always: ["cond", "interview_gc"] },
+  interview_mbbs:  { question: null, always: ["cond", "interview_mbbs"] },
+  industry_mode:   { question: null, always: ["cond", "industry_mode"] },
+  // General English requirement of each group (requirement_groups.english_rule; "none" = set by the rules above)
   eng_foundation:  { question: "spm_english", credit: "ok", pass: ["cond", "eep"], none: ["cond", "eng_check"] },
   eng_bachelor:    { question: "spm_english", credit: "ok", pass: ["cond", "iep"], none: ["fail", "eng_pass"] },
   eng_credit:      { question: "spm_english", credit: "ok", pass: ["fail", "eng_credit"], none: ["fail", "eng_credit"] },
   eng_flex:        { question: "spm_english", credit: "ok", pass: ["cond", "iep"], none: ["cond", "eng_test"] },
+  eng_pass_only:   { question: "spm_english", credit: "ok", pass: "ok", none: ["fail", "eng_pass"] },
 };
 
 const splitRules = text => (text || "").split(",").map(s => s.trim()).filter(Boolean);
@@ -137,27 +244,29 @@ function cleanInput(input) {
   return result;
 }
 
-// True if the student has one of these subjects with grade minGrade or better
-function hasSubject(input, subjects, minGrade) {
-  const scale = SCALES[input.qualification];
-  return input.results.some(r => subjects.includes(r.subject) && scale.indexOf(r.grade) <= scale.indexOf(minGrade));
-}
-function countSubjects(input, subjects, minGrade) {
-  const scale = SCALES[input.qualification];
-  return input.results.filter(r => subjects.includes(r.subject) && scale.indexOf(r.grade) <= scale.indexOf(minGrade)).length;
-}
-
-// Answers that follow from the subjects entered (SPM, O-Level and UEC include Mathematics and English)
+// Answers that follow from the subjects entered (SPM, O-Level and UEC are SPM-level results)
 function derivedAnswers(input) {
   const q = input.qualification;
   if (!CREDIT[q]) return {};
-  const level = subjects => hasSubject(input, subjects, CREDIT[q]) ? "credit" : hasSubject(input, subjects, PASS[q]) ? "pass" : "none";
-  return {
+  const credit = subjects => hasSubject(input, subjects, CREDIT[q]);
+  const pass = subjects => hasSubject(input, subjects, PASS[q]);
+  const level = subjects => (credit(subjects) ? "credit" : pass(subjects) ? "pass" : "none");
+  const answers = {
     spm_math: level(["math"]),
     spm_english: level(["english"]),
-    spm_physics: hasSubject(input, ["physics"], PASS[q]) ? "pass" : "none",
-    fis_subjects: hasSubject(input, ["math", "addmath"], CREDIT[q]) && countSubjects(input, SCIENCE_SUBJECTS, CREDIT[q]) >= 2 ? "yes" : "no",
+    spm_physics: pass(["physics"]) ? "pass" : "none",
+    spm_science: credit(SCIENCE_SUBJECTS) ? "credit" : "none",
+    spm_bm: credit(["bm", "malay"]) ? "credit" : "none",
+    spm_chinese: level(["chinese"]),
+    spm_art: credit(["art"]) ? "credit" : "none",
+    bm_or_english: credit(["bm", "malay", "english"]) ? "yes" : "no",
+    fis_subjects: credit(["math", "addmath"]) && countSubjects(input, SCIENCE_SUBJECTS, CREDIT[q]) >= 2 ? "yes" : "no",
+    spm_math_sci_other: credit(["math"]) && credit(SCIENCE_SUBJECTS) && countSubjects(input, null, CREDIT[q]) >= 3 ? "yes" : "no",
+    spm_2sci_math: credit(["math", "addmath"]) && countSubjects(input, SCIENCE_SUBJECTS, CREDIT[q]) >= 2 ? "yes" : "no",
+    cm_spm: pass(["math"]) && pass(["english"]) && pass([...SCIENCE_SUBJECTS, "computing", "art"]) ? "yes" : "no",
+    spm_bm_math_sci: credit(["bm", "malay"]) && credit(["math"]) && credit(SCIENCE_SUBJECTS) ? "yes" : "no",
   };
+  return Object.fromEntries(Object.entries(answers).filter(([k]) => DERIVED[q].includes(k)));
 }
 
 // The requirement row that applies: the row for the student's field if there is one, otherwise the "any field" row.
@@ -168,17 +277,11 @@ function findRequirement(group, input) {
 
 function applyRule(code, input, row) {
   const rule = RULES[code];
-  let answer = input.answers[rule.question];
-  // Checked from the subjects entered: Mathematics and a Science (or ICT) subject at the required grade
-  if (input.results.length && row.minGrade) {
-    const both = others => hasSubject(input, MATH_SUBJECTS, row.minGrade) && hasSubject(input, others, row.minGrade);
-    if (code === "math_sci") answer = both(NATURAL_SCIENCES) ? "yes" : "no";
-    if (code === "cs_maths" && both([...SCIENCE_SUBJECTS, "computing"])) answer = "subjects";
-  }
+  const toItem = outcome => (outcome === "ok" ? { status: "ok", code } : { status: outcome[0], code: outcome[1] });
+  if (rule.always) return toItem(rule.always);
+  const answer = (rule.compute && graded(input) ? rule.compute(input, row) : undefined) ?? input.answers[rule.question];
   if (!answer) return { status: "missing", code: rule.question };
-  const outcome = rule[answer];
-  if (outcome === "ok") return { status: "ok", code };
-  return { status: outcome[0], code: outcome[1] };
+  return toItem(rule[answer]);
 }
 
 // Checks one requirement group (all its programmes share the same requirements).
@@ -199,7 +302,9 @@ function evaluateGroup(group, input) {
   if (!req) return { verdict: "not_met", items: [{ status: "fail", code: "field" }] };
 
   const items = [];
-  if (req.minGrade) {
+  if (!req.minGrade && req.minCgpa == null) {
+    // checked by the rules only (e.g. MBBS subject grades)
+  } else if (req.minGrade) {
     const scale = SCALES[input.qualification];
     const limit = scale.indexOf(req.minGrade);
     const have = input.grades.filter(g => scale.indexOf(g) <= limit).length;
@@ -209,12 +314,13 @@ function evaluateGroup(group, input) {
       params: { grade: req.minGrade, count: req.minSubjects, have },
     });
   } else {
-    const params = { min: req.minCgpa.toFixed(2), review: req.reviewCgpa?.toFixed(2), cgpa: input.cgpa.toFixed(2) };
+    const params = { min: req.minCgpa.toFixed(2), review: req.reviewCgpa == null ? undefined : req.reviewCgpa.toFixed(2), cgpa: input.cgpa.toFixed(2) };
     if (input.cgpa >= req.minCgpa) items.push({ status: "ok", code: "cgpa", params });
     else if (req.reviewCgpa != null && input.cgpa >= req.reviewCgpa) items.push({ status: "cond", code: "cgpa_review", params });
     else items.push({ status: "fail", code: "cgpa", params });
   }
-  for (const code of [...req.rules, group.englishRule]) items.push(applyRule(code, input, req));
+  const english = group.englishRule === "none" ? [] : [group.englishRule];
+  for (const code of [...req.rules, ...english]) items.push(applyRule(code, input, req));
 
   const has = s => items.some(i => i.status === s);
   const verdict = has("missing") ? "incomplete" : has("fail") ? "not_met" : has("cond") ? "conditional" : "likely";

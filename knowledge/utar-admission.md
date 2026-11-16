@@ -27,6 +27,7 @@ Source: UTAR Minimum Entry Requirements, October 2026 (https://admission.utar.ed
   - A credit in SPM Bahasa Melayu. IGCSE / O-Level candidates need Grade C in 5 subjects, and local candidates also need a credit in Malay (First Language).
   - English: MUET Band 3 or IELTS 5.5 (or equivalent), as set by the Malaysian Nursing Board.
   - You must be at least 18 years old and declare your health status when you enrol.
+- Biomedical Science, Dietetics and Physiotherapy: STPM a GPA of 2.33 (C+) in any 2 of Biology, Chemistry, Physics/Mathematics; A-Level Grade D in any 2 of these; UEC Grade B in 5 subjects including 2 of these; Foundation in Science GPA 2.33 in 2 of these; Diploma in the relevant field CGPA 2.75 (below that, 3 years of related work experience). English: MUET Band 3 or IELTS 5.5 (or equivalent).
 - Bachelor of Arts (Honours) Chinese Studies and Applied Chinese Language:
   - Results: STPM Grade C in 2 subjects, A-Level Grade D in 2 subjects, UEC Grade B in 5 subjects, or Foundation / Matriculation / Diploma with CGPA 2.00.
   - A credit in SPM Chinese. It can be replaced by a credit in O-Level or UEC Chinese, a pass in STPM Chinese, New HSK Level 5 (195 marks or more) or TOCFL Level 4.

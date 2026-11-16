@@ -52,7 +52,8 @@ Three pages, open to everyone (linked from the Admission page):
 | `pathway.html` | Alternative Pathway Recommendation: every programme the student may enter, plus the Foundation route |
 
 - **Data:** `database/programmes.sql` (tables `requirement_groups`, `programmes`, `entry_requirements`), taken from UTAR's official
-  Minimum Entry Requirements documents. 35 programmes so far; add more there and run `npm run db:setup`.
+  Minimum Entry Requirements documents: the 76 Bachelor's degrees offered on this website (Foundation in Science / Arts are kept
+  only as the route for SPM / O-Level students). After editing, run `npm run db:setup`.
 - **Logic:** `server/eligibility.js` (grade scales, questions and rule codes such as `math_credit_mec`), API `GET /api/admission-data`,
   `POST /api/eligibility`, `POST /api/pathways`.
 - **Page code and text:** `site/js/admission-tools.js` and `site/js/i18n-tools.js` (English, Chinese, Malay).
