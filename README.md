@@ -39,7 +39,6 @@ site/        Website pages, CSS, JavaScript, images
 server/      Node.js backend (server.js, db.js, chatbot.js, ai.js, setup-db.js, ai-instructions.md)
 knowledge/   UTAR information files the AI reads
 database/    schema.sql (tables), seed.sql (chatbot), programmes.sql (entry requirements), application.sql (checklist items, journey steps, intake dates)
-wireframe/   Low-fidelity wireframe
 ```
 
 ## Admission tools
