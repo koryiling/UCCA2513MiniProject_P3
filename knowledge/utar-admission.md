@@ -83,8 +83,10 @@ Source: https://admission.utar.edu.my/Contact-Us.php (checked 12 November 2026).
 - UTAR has two campuses: Kampar and Sungai Long.
 
 ## Not covered yet
-- Exact tuition fee amounts, scholarship details, application fee amount and faculty list are not in this knowledge base yet.
+- The application fee amount and the faculty list are not in this knowledge base yet.
   Point students to the website pages below and to UTAR's official website (https://www.utar.edu.my).
+- Tuition fees and the UTAR Scholarship for Top Achievers are given to you in <fees_and_scholarships> when a student asks
+  about them. Use only those figures; for anything else about fees or scholarships, link to fees.html or scholarship.html.
 
 ## Pages on this website
 - Admission requirements: admission.html

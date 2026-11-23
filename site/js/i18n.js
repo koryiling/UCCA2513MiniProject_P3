@@ -51,8 +51,8 @@ const I18N = {
     "chat.q.home": ["What are the entry requirements?","How do I apply to UTAR?","How much are the tuition fees?","Are there scholarships?"],
     "chat.q.admission": ["What are the entry requirements?","What English level do I need?","What if I don't meet the requirements?","How can I check my eligibility?"],
     "chat.q.application": ["How do I apply to UTAR?","What documents do I need?","When is the next intake?","How do I track my application?"],
-    "chat.q.fees": ["How much are the tuition fees?","How do I pay after I get an offer?","Are there scholarships to help with fees?"],
-    "chat.q.scholarship": ["What scholarships are available?","How do I apply for a scholarship?","Who can apply for financial aid?"],
+    "chat.q.fees": ["How much is Computer Science?","I got 2As in STPM. How much is Software Engineering after the scholarship?","Compare the fees of Accounting and Finance","How do I pay after I get an offer?"],
+    "chat.q.scholarship": ["Can I get a scholarship?","I got 7As in UEC. What scholarship can I get?","What scholarships are available?","How do I apply for a scholarship?"],
     "chat.q.student-life": ["Where are UTAR's campuses?","What faculties does UTAR have?","Is there student accommodation?"],
 
     // Login & sign up
@@ -115,8 +115,8 @@ const I18N = {
     "chat.q.home": ["入学要求是什么？","怎样申请 UTAR？","学费多少钱？","有奖学金吗？"],
     "chat.q.admission": ["入学要求是什么？","英文要达到什么程度？","不符合要求怎么办？","怎样检查我的资格？"],
     "chat.q.application": ["怎样申请 UTAR？","需要准备什么文件？","下一次开课是什么时候？","怎样追踪我的申请进度？"],
-    "chat.q.fees": ["学费多少钱？","拿到录取后怎么缴费？","有奖学金可以帮忙付学费吗？"],
-    "chat.q.scholarship": ["有哪些奖学金？","怎样申请奖学金？","谁可以申请助学金？"],
+    "chat.q.fees": ["Computer Science 学费多少？","我 STPM 拿了 2 个 A，Software Engineering 扣除奖学金后要多少钱？","比较 Accounting 和 Finance 的学费","拿到录取后怎么缴费？"],
+    "chat.q.scholarship": ["我可以拿奖学金吗？","我统考拿了 7 个 A，可以拿什么奖学金？","有哪些奖学金？","怎样申请奖学金？"],
     "chat.q.student-life": ["UTAR 的校区在哪里？","UTAR 有哪些学院？","有学生宿舍吗？"],
 
     // Home
@@ -373,8 +373,8 @@ const I18N = {
     "chat.q.home": ["Apakah syarat kemasukan?","Bagaimana untuk memohon ke UTAR?","Berapakah yuran pengajian?","Adakah biasiswa disediakan?"],
     "chat.q.admission": ["Apakah syarat kemasukan?","Apakah tahap Bahasa Inggeris yang diperlukan?","Bagaimana jika saya tidak memenuhi syarat?","Bagaimana untuk menyemak kelayakan saya?"],
     "chat.q.application": ["Bagaimana untuk memohon ke UTAR?","Apakah dokumen yang diperlukan?","Bilakah pengambilan seterusnya?","Bagaimana untuk menjejak permohonan saya?"],
-    "chat.q.fees": ["Berapakah yuran pengajian?","Bagaimana membayar selepas menerima tawaran?","Adakah biasiswa untuk membantu yuran?"],
-    "chat.q.scholarship": ["Apakah biasiswa yang ada?","Bagaimana untuk memohon biasiswa?","Siapa yang boleh memohon bantuan kewangan?"],
+    "chat.q.fees": ["Berapakah yuran Computer Science?","Saya dapat 2A dalam STPM. Berapakah kos Software Engineering selepas biasiswa?","Bandingkan yuran Accounting dan Finance","Bagaimana membayar selepas menerima tawaran?"],
+    "chat.q.scholarship": ["Bolehkah saya mendapat biasiswa?","Saya dapat 7A dalam UEC. Biasiswa apa yang boleh saya dapat?","Apakah biasiswa yang ada?","Bagaimana untuk memohon biasiswa?"],
     "chat.q.student-life": ["Di manakah kampus UTAR?","Apakah fakulti yang ada di UTAR?","Adakah asrama pelajar disediakan?"],
 
     "title.home": "Laman Utama | Pembantu Kemasukan UTAR",

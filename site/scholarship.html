@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Scholarship Information | UTAR Admission Assistant</title>
+  <title data-i18n="title.scholarship">Scholarship Information | UTAR Admission Assistant</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="scholarship">
@@ -12,50 +12,44 @@
   <main>
     <section class="page-hero">
       <div class="container">
-        <p class="crumb"><a href="index.html">Home</a> › Scholarship Information</p>
-        <h1>Scholarship Information</h1>
-        <p>Learn about scholarships and financial aid that may support your studies.</p>
+        <p class="crumb"><a href="index.html" data-i18n="nav.home">Home</a> › <span data-i18n="nav.scholarship">Scholarship Information</span></p>
+        <h1 data-i18n="nav.scholarship">Scholarship Information</h1>
+        <p data-i18n="fin.sch.sub">UTAR Top Achievers scholarship tiers and other scholarships and financial aid. Ask the chatbot which scholarship your results may reach.</p>
       </div>
     </section>
 
     <section class="container section">
-      <h2>Available Options</h2>
-      <div class="grid-3">
-        <div class="info-box">
-          <span class="m-icon">🏅</span>
-          <h3>[Scholarship name]</h3>
-          <p><b>Who can apply:</b> [Eligibility criteria]</p>
-          <p><b>Benefit:</b> [Coverage]</p>
-        </div>
-        <div class="info-box">
-          <span class="m-icon">🎖️</span>
-          <h3>[Scholarship name]</h3>
-          <p><b>Who can apply:</b> [Eligibility criteria]</p>
-          <p><b>Benefit:</b> [Coverage]</p>
-        </div>
-        <div class="info-box">
-          <span class="m-icon">💳</span>
-          <h3>[Financial aid / loan]</h3>
-          <p><b>Who can apply:</b> [Eligibility criteria]</p>
-          <p><b>Benefit:</b> [Coverage]</p>
-        </div>
-      </div>
-      <p class="source">Sample placeholders. Scholarship details will be taken from official UTAR announcements:
-        <a href="https://admission.utar.edu.my/" target="_blank" rel="noopener">UTAR Admission website ↗</a></p>
+      <h2 data-i18n="fin.ask.h">Ask the Assistant</h2>
+      <div id="askSch"></div>
     </section>
 
     <section class="container section">
-      <h2>How to Apply</h2>
+      <h2 data-i18n="fin.tiers.h">UTAR Scholarship for Top Achievers</h2>
+      <p class="muted" data-i18n="fin.tiers.sub">Tuition fee waiver by result. Awarded automatically on actual results in a single sitting.</p>
+      <div id="tiers"><p class="tool-note" data-i18n="fin.loading">Loading…</p></div>
+    </section>
+
+    <section class="container section">
+      <h2 data-i18n="fin.other.h">Other Scholarships and Financial Aid</h2>
+      <p class="muted" data-i18n="fin.other.sub">Each has its own eligibility criteria and terms. Open the link for details.</p>
+      <div id="others"><p class="tool-note" data-i18n="fin.loading">Loading…</p></div>
+    </section>
+
+    <section class="container section">
+      <h2 data-i18n="fin.how.h">How to Apply</h2>
       <ol class="steps steps-3">
-        <li><b>1</b><span>Check the eligibility criteria</span></li>
-        <li><b>2</b><span>Prepare the required documents</span></li>
-        <li><b>3</b><span>Submit before the closing date</span></li>
+        <li><b>1</b><span data-i18n="fin.how.1">Top Achievers: no application needed, it is awarded automatically</span></li>
+        <li><b>2</b><span data-i18n="fin.how.2">Other internal scholarships: apply in week 1-2 of your intake</span></li>
+        <li><b>3</b><span data-i18n="fin.how.3">UTAR loans: apply in week 1-4; PTPTN and external awards on their own pages</span></li>
       </ol>
     </section>
   </main>
 
   <div id="site-footer"></div>
   <script src="js/i18n.js"></script>
+  <script src="js/i18n-finance.js"></script>
   <script src="js/script.js"></script>
+  <script src="js/finance-tools.js"></script>
+  <script>initScholarship();</script>
 </body>
 </html>

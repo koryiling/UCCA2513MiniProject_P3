@@ -30,6 +30,7 @@ A website and AI chatbot (with a rule-based backup) that helps students find UTA
 | `npm start` | Runs the website and API at http://localhost:3000 (chatbot works) |
 | `npm run db:setup` | Creates the tables and reloads the chatbot data (safe to run again) |
 | `npm run dev` | Frontend preview with Vite; chat requests go to the backend, so run `npm start` too |
+| `npm test` | Runs the tests for the fees and scholarship logic (no database needed) |
 
 ## Project structure
 
@@ -38,7 +39,9 @@ site/        Website pages, CSS, JavaScript, images
   js/i18n.js   All Chinese and Malay translations
 server/      Node.js backend (server.js, db.js, chatbot.js, ai.js, setup-db.js, ai-instructions.md)
 knowledge/   UTAR information files the AI reads
-database/    schema.sql (tables), seed.sql (chatbot), programmes.sql (entry requirements), application.sql (checklist items, journey steps, intake dates)
+database/    schema.sql (tables), seed.sql (chatbot), programmes.sql (entry requirements), application.sql (checklist items, journey steps, intake dates),
+             finance.sql (programme fees, scholarship tiers, other scholarships)
+test/        Automated tests (npm test)
 ```
 
 ## Admission tools
@@ -58,6 +61,28 @@ Three pages, open to everyone (linked from the Admission page):
   `POST /api/eligibility`, `POST /api/pathways`.
 - **Page code and text:** `site/js/admission-tools.js` and `site/js/i18n-tools.js` (English, Chinese, Malay).
 - Results are guidance only; nothing the student enters is saved on the server.
+
+## Fees and scholarships in the chatbot (Tuition Fees & Scholarship Information module)
+
+Scholarship checks and cost estimates are answered by the **chatbot**, e.g.:
+"I got 2As in STPM, how much is Software Engineering?" -> 50% Top Achievers waiver, RM28,450 in total (RM9,483 per year).
+The student can give the details one at a time ("How much is Computer Science?" ... "I got 3As in STPM" ... "I'm international"),
+and the chatbot asks for anything missing (qualification, number of As or CGPA, programme, Malaysian or international).
+
+- **Logic:** `server/finance.js`: Message Parser (programme, qualification, result, student type, in English, Chinese or Malay),
+  Scholarship Matcher (UTAR Scholarship for Top Achievers tier and what is missing for the next one) and Cost Estimator
+  (total, per year, per trimester, 6% SST for international students, comparison of two programmes).
+  `chatbot.js` calls `finance.forChat()` with the conversation; the figures go to the AI, which must use those exact numbers.
+  If no AI answers, the rule-based reply shows the same figures in English, Chinese or Malay.
+- **Data:** `database/finance.sql` (tables `programme_fees`, `scholarship_tiers`, `scholarships`). Fees come from each programme's page on
+  https://study.utar.edu.my and the tiers from the DSFA page, all checked 16 November 2026. `programme_fees` is linked to `programmes`
+  by the programme name, so both modules use the same 76 programmes. Fees change every intake: update the numbers and the
+  `last_checked` dates, then run `npm run db:setup`.
+- **Pages:** `fees.html` (fee table of all 76 programmes) and `scholarship.html` (Top Achievers tiers, other scholarships and aid)
+  are reference pages with example questions that open the chatbot. They use `GET /api/finance-data`, `site/js/finance-tools.js`
+  and `site/js/i18n-finance.js`.
+- **Tests:** `test/finance.test.js`, 31 tests including multi-message conversations (`npm test`, no database needed).
+- Every figure shows its official source and last checked date. All amounts are estimates; nothing the student enters is saved.
 
 ## Accounts and application tools
 

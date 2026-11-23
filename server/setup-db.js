@@ -1,5 +1,5 @@
 // Creates the tables and loads the chatbot and programme data:  npm run db:setup
-// Runs database/schema.sql, seed.sql, programmes.sql and application.sql using the settings in server/.env.
+// Runs database/schema.sql, seed.sql, programmes.sql, application.sql and finance.sql using the settings in server/.env.
 // The database and the utar_app user must already exist (see README.md).
 const fs = require("fs");
 const path = require("path");
@@ -17,7 +17,7 @@ async function main() {
     multipleStatements: true,
   });
 
-  for (const file of ["schema.sql", "seed.sql", "programmes.sql", "application.sql"]) {
+  for (const file of ["schema.sql", "seed.sql", "programmes.sql", "application.sql", "finance.sql"]) {
     const sql = fs.readFileSync(path.join(__dirname, "..", "database", file), "utf8");
     await conn.query(sql);
     console.log(`Ran database/${file}`);
@@ -47,6 +47,11 @@ async function main() {
             (SELECT COUNT(*) FROM important_dates) AS dates`
   );
   console.log(`Application tools data loaded: ${app.items} checklist items, ${app.stages} journey stages, ${app.dates} dates`);
+  const [[finance]] = await conn.query(
+    `SELECT (SELECT COUNT(*) FROM programme_fees) AS fees, (SELECT COUNT(*) FROM scholarship_tiers) AS tiers,
+            (SELECT COUNT(*) FROM scholarships) AS scholarships`
+  );
+  console.log(`Fees and scholarships loaded: ${finance.fees} programme fees, ${finance.tiers} scholarship tiers, ${finance.scholarships} other scholarships`);
   await conn.end();
 }
 

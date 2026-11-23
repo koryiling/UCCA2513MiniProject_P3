@@ -39,16 +39,15 @@ function describe() {
 // Admission and application facts are already in knowledge/, so those pages are not repeated.
 // Free AI plans limit how much text can be sent per minute, so only relevant pages are sent.
 const INTENT_PAGES = {
-  fees: ["fees.html"],
-  scholarship: ["scholarship.html"],
   student_life: ["student-life.html"],
-  acceptance: ["fees.html"],
 };
 // Pages never sent: login/sign-up have no information, and the others are already covered
 // by the files in knowledge/ (update knowledge/ when these pages change).
 const NO_INFO_PAGES = ["login.html", "signup.html", "index.html", "admission.html", "application.html", "faq.html",
-  "explainer.html", "eligibility.html", "pathway.html", "checklist.html", "tracker.html", "dates.html"];
-// (the tool pages are filled in by JavaScript; they are described in knowledge/website-guide.md)
+  "explainer.html", "eligibility.html", "pathway.html", "checklist.html", "tracker.html", "dates.html",
+  "fees.html", "scholarship.html"];
+// (the tool pages are filled in by JavaScript; they are described in knowledge/website-guide.md.
+//  Fee and scholarship figures come from the database through server/finance.js instead.)
 
 // The text of the chosen website pages, so the AI knows what they say (fees, scholarships,
 // student life, ...). Teammates' updates to these pages are picked up automatically.
@@ -113,8 +112,9 @@ async function callProvider(p, messages) {
 // should prefer the language the student actually wrote in.
 // page: the page the student is on (e.g. "fees.html"), so "this page" questions make sense.
 // intent: the question type found by the keyword rules, used to pick related pages.
+// extra: more facts for this question, e.g. fees and scholarship figures from server/finance.js.
 // Returns { text, model } from the first provider that answers; throws if all of them fail.
-async function ask(message, history, lang, sure, page, intent) {
+async function ask(message, history, lang, sure, page, intent, extra = "") {
   const langName = LANG_NAMES[lang] || "English";
   // The page and language rules go at the end of the system prompt: small models follow them
   // there more reliably than a note added to the student's message.
@@ -123,7 +123,7 @@ async function ask(message, history, lang, sure, page, intent) {
     ? `Language: the student wrote in ${langName}. Write your whole answer in ${langName} only.`
     : `Language: write your whole answer in the same language as the student's latest message. If you cannot tell, use ${langName}.`;
   const messages = [
-    { role: "system", content: `${buildSystemPrompt(pagesFor(page, intent))}\n\n${pageNote}\n${langRule}` },
+    { role: "system", content: `${buildSystemPrompt(pagesFor(page, intent))}${extra ? `\n\n${extra}` : ""}\n\n${pageNote}\n${langRule}` },
     ...history,
     { role: "user", content: message },
   ];

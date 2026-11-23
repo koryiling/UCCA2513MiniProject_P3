@@ -4,6 +4,7 @@
 // - GET /api/admission-data, POST /api/eligibility, POST /api/pathways: admission tools
 // - /api/auth/...: sign up, log in, log out (server/auth.js)
 // - /api/app/...: application tools for logged-in students (server/application.js)
+// - GET /api/finance-data: fee and scholarship tables (server/finance.js; the chatbot does the calculations)
 //
 // Start with:  npm start   then open http://localhost:3000
 const path = require("path");
@@ -13,6 +14,7 @@ const chatbot = require("./chatbot");
 const eligibility = require("./eligibility");
 const auth = require("./auth");
 const applicationTools = require("./application");
+const finance = require("./finance");
 
 const app = express();
 app.use(express.json({ limit: "100kb" }));
@@ -62,6 +64,10 @@ app.get("/api/admission-data", toolRoute(() => eligibility.publicData()));
 app.post("/api/eligibility", toolRoute(body => eligibility.check(body)));
 // { qualification, results | cgpa, answers, programmeId? } -> { target, options }
 app.post("/api/pathways", toolRoute(body => eligibility.pathways(body)));
+
+// Fees and scholarships (Module 3, see server/finance.js). Scholarship and cost questions are answered
+// by the chatbot; this only gives the fee table and scholarship tiers shown on fees.html and scholarship.html.
+app.get("/api/finance-data", toolRoute(() => finance.publicData()));
 
 // Accounts and the application tools
 app.use("/api/auth", auth.router);

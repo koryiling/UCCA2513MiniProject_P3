@@ -2,6 +2,7 @@
 // stored in MySQL, then returns that intent's response in the requested language.
 const pool = require("./db");
 const ai = require("./ai");
+const finance = require("./finance");
 
 const LANGS = ["en", "zh", "ms"];
 
@@ -79,13 +80,22 @@ async function reply(message, pageLang, history = [], page = null) {
   const { intent, langCounts } = await findIntent(message);
   const { lang, sure } = detectLang(message, langCounts, pageLang);
 
+  // Fees and scholarships: figures calculated by server/finance.js (using details from earlier in the chat),
+  // given to the AI and used by the rule-based answer
+  let financeResult = null;
+  try {
+    financeResult = await finance.forChat(message, intent, history);
+  } catch (err) {
+    console.error("Fees and scholarship data not available:", err.message);
+  }
+
   let source = "rules";
   let model = null;
   let text;
   let html;
   if (ai.isConfigured()) {
     try {
-      ({ text, model } = await ai.ask(message, history, lang, sure, page, intent));
+      ({ text, model } = await ai.ask(message, history, lang, sure, page, intent, financeResult?.context));
       html = ai.toSafeHtml(text);
       source = "ai";
     } catch (err) {
@@ -93,7 +103,8 @@ async function reply(message, pageLang, history = [], page = null) {
     }
   }
   if (source === "rules") {
-    html = (await getResponse(intent, lang)) ?? (await getResponse("fallback", lang));
+    html = finance.ruleReply(financeResult, lang) ??
+      (await getResponse(intent, lang)) ?? (await getResponse("fallback", lang));
     text = html.replace(/<[^>]+>/g, "");
   }
 
