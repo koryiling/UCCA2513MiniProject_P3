@@ -3,3 +3,6 @@ dist/
 
 # Local settings with passwords - never commit
 .env
+
+# Test results (made by npm test)
+test/results/

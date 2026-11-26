@@ -1,0 +1,285 @@
+{
+  "about": "30 test students for the Smart Eligibility Checker. Each expected result was worked out by hand from UTAR's official Minimum Entry Requirements (October 2026), not from the program. Run: npm test",
+  "fields": {
+    "programme": "Exact programme name, as in database/programmes.sql",
+    "input.qualification": "spm | olevel | uec | stpm | alevel | foundation | diploma",
+    "input.results": "[subject, grade] pairs (subject codes as in server/eligibility.js)",
+    "input.cgpa": "For foundation / diploma",
+    "input.answers": "Answers to the checker's questions",
+    "expected.verdict": "likely | conditional | not_met | no_route",
+    "expected.reasons": "Messages that must appear in the result (conditions or unmet requirements)",
+    "expected.foundation": "For SPM / O-Level students: the expected result for the Foundation route"
+  },
+  "cases": [
+    {
+      "id": "S01",
+      "student": "STPM, good grades, credits in SPM Mathematics and English",
+      "programme": "Bachelor of Accounting (Honours)",
+      "input": { "qualification": "stpm", "results": [["economics", "A-"], ["accounting", "B+"], ["general_studies", "B"]],
+                 "answers": { "spm_math": "credit", "spm_english": "credit" } },
+      "expected": { "verdict": "likely" },
+      "rule": "STPM C+ (GP 2.33) in 2 subjects; credit in SPM Mathematics; credit in SPM English"
+    },
+    {
+      "id": "S02",
+      "student": "STPM with two Grade C only",
+      "programme": "Bachelor of Accounting (Honours)",
+      "input": { "qualification": "stpm", "results": [["accounting", "C"], ["economics", "C"], ["general_studies", "C"]],
+                 "answers": { "spm_math": "credit", "spm_english": "credit" } },
+      "expected": { "verdict": "not_met", "reasons": ["grades"] },
+      "rule": "Accounting needs C+ (GP 2.33), so Grade C is not enough"
+    },
+    {
+      "id": "S03",
+      "student": "STPM, only a pass in SPM Mathematics",
+      "programme": "Bachelor of Commerce (Honours) Accounting",
+      "input": { "qualification": "stpm", "results": [["accounting", "B"], ["economics", "B"]],
+                 "answers": { "spm_math": "pass", "spm_english": "credit" } },
+      "expected": { "verdict": "conditional", "reasons": ["mec"] },
+      "rule": "Without a credit in SPM Mathematics: admitted but must pass the Mathematics Enhancement Course (MEC)"
+    },
+    {
+      "id": "S04",
+      "student": "UEC, Grade B5 or better in 5 subjects",
+      "programme": "Bachelor of Accounting (Honours)",
+      "input": { "qualification": "uec", "results": [["chinese", "A1"], ["malay", "B4"], ["english", "B3"], ["math", "A2"], ["accounting", "B5"], ["economics", "B6"]],
+                 "answers": {} },
+      "expected": { "verdict": "likely" },
+      "rule": "UEC Grade B (minimum B5) in 5 subjects; UEC Mathematics and English count as credits"
+    },
+    {
+      "id": "S05",
+      "student": "STPM, did not pass SPM Mathematics",
+      "programme": "Bachelor of Business Administration (Honours)",
+      "input": { "qualification": "stpm", "results": [["business", "C"], ["economics", "C"]],
+                 "answers": { "spm_math": "none", "spm_english": "credit" } },
+      "expected": { "verdict": "conditional", "reasons": ["mec"] },
+      "rule": "Without a pass in SPM Mathematics: admitted but must attend and pass MEC"
+    },
+    {
+      "id": "S06",
+      "student": "STPM, did not pass SPM English",
+      "programme": "Bachelor of Marketing (Honours)",
+      "input": { "qualification": "stpm", "results": [["business", "B"], ["economics", "B"]],
+                 "answers": { "spm_math": "credit", "spm_english": "none" } },
+      "expected": { "verdict": "conditional", "reasons": ["eng_test"] },
+      "rule": "Without a pass in SPM English: admitted but must meet the English requirement through a recognised test"
+    },
+    {
+      "id": "S07",
+      "student": "A-Level with Mathematics, Physics and Chemistry",
+      "programme": "Bachelor of Computer Science (Honours)",
+      "input": { "qualification": "alevel", "results": [["math", "A"], ["physics", "B"], ["chemistry", "C"]],
+                 "answers": { "cs_maths": "subjects", "spm_english": "credit" } },
+      "expected": { "verdict": "likely" },
+      "rule": "A-Level Grade D in 1 Mathematics subject and 1 Science/ICT subject"
+    },
+    {
+      "id": "S08",
+      "student": "STPM arts stream, credit in SPM Mathematics and Physics",
+      "programme": "Bachelor of Software Engineering (Honours)",
+      "input": { "qualification": "stpm", "results": [["economics", "B"], ["accounting", "B"]],
+                 "answers": { "cs_maths": "math_sci", "spm_english": "credit" } },
+      "expected": { "verdict": "conditional", "reasons": ["mec"] },
+      "rule": "Arts stream with credit in SPM Mathematics and a Science subject: must take and pass MEC"
+    },
+    {
+      "id": "S09",
+      "student": "STPM arts stream, no Additional Mathematics or Science credits",
+      "programme": "Bachelor of Computer Science (Honours)",
+      "input": { "qualification": "stpm", "results": [["economics", "B"], ["business", "B"]],
+                 "answers": { "cs_maths": "none", "spm_english": "credit" } },
+      "expected": { "verdict": "not_met", "reasons": ["cs_maths"] },
+      "rule": "Arts stream needs a credit in SPM Additional Mathematics, or SPM Mathematics and a Science subject"
+    },
+    {
+      "id": "S10",
+      "student": "Foundation CGPA 2.80, only passes in SPM Mathematics and English",
+      "programme": "Bachelor of Information Systems (Honours) Business Information Systems",
+      "input": { "qualification": "foundation", "cgpa": 2.8,
+                 "answers": { "spm_math": "pass", "spm_english": "pass" } },
+      "expected": { "verdict": "conditional", "reasons": ["mec", "iep"] },
+      "rule": "Foundation CGPA 2.00; credit in SPM Mathematics (pass: MEC); pass in SPM English only: Intensive English Programme"
+    },
+    {
+      "id": "S11",
+      "student": "Diploma in Computing, CGPA 2.30",
+      "programme": "Bachelor of Information Technology (Honours) Communications and Networking",
+      "input": { "qualification": "diploma", "cgpa": 2.3,
+                 "answers": { "study_field": "computing", "spm_english": "credit" } },
+      "expected": { "verdict": "conditional", "reasons": ["cgpa_review"] },
+      "rule": "Diploma in Computing CGPA 2.50; below 2.50 but above 2.00: thorough internal evaluation"
+    },
+    {
+      "id": "S12",
+      "student": "Diploma in Business, CGPA 2.60",
+      "programme": "Bachelor of Information Technology (Honours) Computer Engineering",
+      "input": { "qualification": "diploma", "cgpa": 2.6,
+                 "answers": { "study_field": "business", "spm_english": "credit" } },
+      "expected": { "verdict": "not_met", "reasons": ["field"] },
+      "rule": "Only a Diploma in Computing or in Science and Technology is accepted"
+    },
+    {
+      "id": "S13",
+      "student": "STPM science stream",
+      "programme": "Bachelor of Civil Engineering with Honours",
+      "input": { "qualification": "stpm", "results": [["math_t", "B"], ["physics", "B"], ["chemistry", "C"]],
+                 "answers": { "spm_english": "credit" } },
+      "expected": { "verdict": "likely" },
+      "rule": "STPM Grade C in Mathematics and 1 relevant Natural Science subject"
+    },
+    {
+      "id": "S14",
+      "student": "STPM arts stream, no Mathematics or Science",
+      "programme": "Bachelor of Mechanical Engineering with Honours",
+      "input": { "qualification": "stpm", "results": [["economics", "A"], ["accounting", "A"]],
+                 "answers": { "spm_english": "credit" } },
+      "expected": { "verdict": "not_met", "reasons": ["math_sci"] },
+      "rule": "Engineering needs Mathematics and 1 relevant Natural Science subject"
+    },
+    {
+      "id": "S15",
+      "student": "SPM leaver with 7 credits including Mathematics, Physics and Chemistry",
+      "programme": "Bachelor of Electrical and Electronic Engineering with Honours",
+      "input": { "qualification": "spm", "results": [["bm", "A"], ["english", "B"], ["math", "A"], ["history", "C"], ["physics", "B"], ["chemistry", "B"], ["addmath", "C"]],
+                 "answers": {} },
+      "expected": { "verdict": "no_route", "foundation": "likely" },
+      "rule": "SPM leads to a degree through Foundation in Science: 5 credits including 1 Mathematics and 2 Science subjects"
+    },
+    {
+      "id": "S16",
+      "student": "SPM leaver with only 3 credits",
+      "programme": "Bachelor of Marketing (Honours)",
+      "input": { "qualification": "spm", "results": [["bm", "C"], ["english", "D"], ["math", "C"], ["history", "C"], ["moral", "E"], ["science", "D"]],
+                 "answers": {} },
+      "expected": { "verdict": "no_route", "foundation": "not_met" },
+      "rule": "Foundation in Arts needs 5 SPM credits"
+    },
+    {
+      "id": "S17",
+      "student": "STPM Biology A, Chemistry A-, Physics B, MUET Band 4",
+      "programme": "Bachelor of Medicine and Bachelor of Surgery (MBBS)",
+      "input": { "qualification": "stpm", "results": [["biology", "A"], ["chemistry", "A-"], ["physics", "B"], ["general_studies", "B+"]],
+                 "answers": { "english_high": "yes" } },
+      "expected": { "verdict": "conditional", "reasons": ["interview_mbbs"] },
+      "rule": "STPM BBB / ABC / AAC (or GPA 3.00) in Biology, Chemistry and Physics/Mathematics; MUET Band 4.0; interview if shortlisted"
+    },
+    {
+      "id": "S18",
+      "student": "STPM Biology B, Chemistry B-, Mathematics B",
+      "programme": "Bachelor of Medicine and Bachelor of Surgery (MBBS)",
+      "input": { "qualification": "stpm", "results": [["biology", "B"], ["chemistry", "B-"], ["math_t", "B"]],
+                 "answers": { "english_high": "yes" } },
+      "expected": { "verdict": "not_met", "reasons": ["mbbs_subjects"] },
+      "rule": "B, B-, B is below BBB (GPA 2.89 < 3.00)"
+    },
+    {
+      "id": "S19",
+      "student": "UEC B4 or better in Biology, Chemistry, Physics and both Advanced Mathematics papers",
+      "programme": "Bachelor of Medicine and Bachelor of Surgery (MBBS)",
+      "input": { "qualification": "uec", "results": [["biology", "A1"], ["chemistry", "A2"], ["physics", "B3"], ["math", "A1"], ["addmath", "B4"], ["english", "A2"]],
+                 "answers": { "english_high": "yes" } },
+      "expected": { "verdict": "conditional", "reasons": ["interview_mbbs"] },
+      "rule": "UEC Grade B4 in Biology, Chemistry, Physics, Advanced Mathematics (I) and (II)"
+    },
+    {
+      "id": "S20",
+      "student": "STPM CGPA 2.70, credit in SPM Bahasa Melayu, MUET Band 3",
+      "programme": "Bachelor of Nursing (Honours)",
+      "input": { "qualification": "stpm", "results": [["biology", "C+"], ["chemistry", "C"], ["general_studies", "B-"]],
+                 "answers": { "stpm_cgpa": "ge250", "spm_bm": "credit", "muet3": "yes" } },
+      "expected": { "verdict": "likely" },
+      "rule": "STPM CGPA 2.0; credit in SPM Bahasa Melayu; MUET Band 3 / IELTS 5.5"
+    },
+    {
+      "id": "S21",
+      "student": "STPM CGPA 3.10, no credit in SPM Bahasa Melayu",
+      "programme": "Bachelor of Nursing (Honours)",
+      "input": { "qualification": "stpm", "results": [["biology", "B"], ["chemistry", "B"]],
+                 "answers": { "stpm_cgpa": "ge300", "spm_bm": "none", "muet3": "yes" } },
+      "expected": { "verdict": "not_met", "reasons": ["bm_credit"] },
+      "rule": "Nursing requires a credit in SPM Bahasa Melayu"
+    },
+    {
+      "id": "S22",
+      "student": "STPM Biology B, Chemistry C+, MUET Band 3",
+      "programme": "Bachelor of Physiotherapy (Honours)",
+      "input": { "qualification": "stpm", "results": [["biology", "B"], ["chemistry", "C+"], ["economics", "A"]],
+                 "answers": { "muet3": "yes", "spm_english": "credit" } },
+      "expected": { "verdict": "likely" },
+      "rule": "GPA 2.33 in any 2 of Biology, Chemistry, Physics/Mathematics; MUET Band 3"
+    },
+    {
+      "id": "S23",
+      "student": "STPM with Biology only among the science subjects",
+      "programme": "Bachelor of Science (Honours) Biomedical Science",
+      "input": { "qualification": "stpm", "results": [["biology", "B"], ["economics", "A"], ["accounting", "A"]],
+                 "answers": { "muet3": "yes", "spm_english": "credit" } },
+      "expected": { "verdict": "not_met", "reasons": ["med3_subjects"] },
+      "rule": "Needs 2 of Biology, Chemistry, Physics/Mathematics at GP 2.33"
+    },
+    {
+      "id": "S24",
+      "student": "STPM science stream, no credit in SPM Art",
+      "programme": "Bachelor of Science (Honours) Architecture",
+      "input": { "qualification": "stpm", "results": [["math_t", "B"], ["physics", "C"]],
+                 "answers": { "spm_art": "none", "spm_math": "credit", "spm_english": "credit" } },
+      "expected": { "verdict": "conditional", "reasons": ["portfolio_arch"] },
+      "rule": "Applicants without a credit in SPM Pendidikan Seni submit a portfolio"
+    },
+    {
+      "id": "S25",
+      "student": "STPM with Mathematics, credits in SPM Mathematics and English",
+      "programme": "Bachelor of Science in Quantity Surveying with Honours",
+      "input": { "qualification": "stpm", "results": [["math_t", "C"], ["physics", "C"], ["chemistry", "B"]],
+                 "answers": { "spm_math": "credit", "bm_or_english": "yes", "spm_english": "credit" } },
+      "expected": { "verdict": "likely" },
+      "rule": "STPM 3 passes of Grade C including Mathematics; credit in SPM Mathematics and Bahasa Melayu / English"
+    },
+    {
+      "id": "S26",
+      "student": "UEC with Chinese A1 and English C7",
+      "programme": "Bachelor of Arts (Honours) Chinese Studies",
+      "input": { "qualification": "uec", "results": [["chinese", "A1"], ["english", "C7"], ["malay", "B4"], ["history", "B5"], ["geography", "B6"], ["math", "B3"]],
+                 "answers": {} },
+      "expected": { "verdict": "likely" },
+      "rule": "UEC Grade B in 5 subjects; UEC Chinese credit replaces SPM Chinese; a pass in English is enough"
+    },
+    {
+      "id": "S27",
+      "student": "STPM, credit in SPM English but no MUET Band 4 / IELTS 6",
+      "programme": "Bachelor of Arts (Honours) English Language",
+      "input": { "qualification": "stpm", "results": [["lit_english", "A"], ["economics", "B"]],
+                 "answers": { "spm_english": "credit", "english_high": "no" } },
+      "expected": { "verdict": "not_met", "reasons": ["english_high"] },
+      "rule": "Requires IELTS Band 6.0 / MUET Band 4.0 or equivalent"
+    },
+    {
+      "id": "S28",
+      "student": "STPM, pass in SPM Mathematics, credit in SPM Science",
+      "programme": "Bachelor of Social Science (Honours) Psychology",
+      "input": { "qualification": "stpm", "results": [["economics", "B"], ["geography", "C"]],
+                 "answers": { "spm_math": "pass", "spm_science": "credit", "spm_english": "credit" } },
+      "expected": { "verdict": "conditional", "reasons": ["mec"] },
+      "rule": "Without a credit in SPM Mathematics: admitted but must pass MEC"
+    },
+    {
+      "id": "S29",
+      "student": "STPM applying for a design programme",
+      "programme": "Bachelor of Arts (Honours) Digital Animation",
+      "input": { "qualification": "stpm", "results": [["economics", "C"], ["business", "C"]],
+                 "answers": { "spm_english": "credit" } },
+      "expected": { "verdict": "conditional", "reasons": ["portfolio_art"] },
+      "rule": "Every applicant submits a portfolio for review"
+    },
+    {
+      "id": "S30",
+      "student": "STPM Mathematics B, only a pass in SPM Mathematics",
+      "programme": "Bachelor of Finance (Honours)",
+      "input": { "qualification": "stpm", "results": [["math_t", "B"], ["economics", "B+"]],
+                 "answers": { "spm_math": "pass", "spm_english": "credit" } },
+      "expected": { "verdict": "likely" },
+      "rule": "Credit in SPM Mathematics is needed only for applicants without a Principal Pass in STPM Mathematics"
+    }
+  ]
+}

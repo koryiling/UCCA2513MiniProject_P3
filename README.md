@@ -30,7 +30,9 @@ A website and AI chatbot (with a rule-based backup) that helps students find UTA
 | `npm start` | Runs the website and API at http://localhost:3000 (chatbot works) |
 | `npm run db:setup` | Creates the tables and reloads the chatbot data (safe to run again) |
 | `npm run dev` | Frontend preview with Vite; chat requests go to the backend, so run `npm start` too |
-| `npm test` | Runs the tests for the fees and scholarship logic (no database needed) |
+| `npm test` | Runs all automated tests (fees and scholarships, then eligibility) |
+| `npm run test:finance` | Tests for the fees and scholarship logic (no database needed) |
+| `npm run test:eligibility` | Checks 30 test students against their expected eligibility results (needs MySQL) |
 
 ## Project structure
 
@@ -81,7 +83,7 @@ and the chatbot asks for anything missing (qualification, number of As or CGPA, 
 - **Pages:** `fees.html` (fee table of all 76 programmes) and `scholarship.html` (Top Achievers tiers, other scholarships and aid)
   are reference pages with example questions that open the chatbot. They use `GET /api/finance-data`, `site/js/finance-tools.js`
   and `site/js/i18n-finance.js`.
-- **Tests:** `test/finance.test.js`, 31 tests including multi-message conversations (`npm test`, no database needed).
+- **Tests:** `test/finance.test.js`, 31 tests including multi-message conversations (`npm run test:finance`, no database needed).
 - Every figure shows its official source and last checked date. All amounts are estimates; nothing the student enters is saved.
 
 ## Accounts and application tools
@@ -103,6 +105,16 @@ Only the Application section needs an account.
 - `application.html` shows a "My progress" summary (`GET /api/app/dashboard`).
 - Checklist items, journey steps and intake dates are in `database/application.sql`; their text is in `site/js/i18n-app.js`.
 - The tools are the student's own records and are not connected to UTAR's official application system.
+
+## Automatic eligibility test
+
+`npm run test:eligibility` (also part of `npm test`) runs the 30 test students in `test/eligibility-cases.json` through the Smart Eligibility Checker
+and compares each result with the expected answer, which was worked out by hand from UTAR's official
+Minimum Entry Requirements. MySQL must be running (the website does not need to be).
+
+- The console shows PASS / FAIL for each student and the total, e.g. `30 / 30 passed (100.0%)`.
+- A results table for the report is saved to `test/results/eligibility-test-results.md` and `.csv` (not uploaded to GitHub).
+- To add a test student, copy one entry in `eligibility-cases.json` and change the input and the expected result.
 
 ## How the chatbot works
 

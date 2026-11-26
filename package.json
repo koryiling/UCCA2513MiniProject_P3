@@ -6,9 +6,12 @@
   "scripts": {
     "start": "node server/server.js",
     "db:setup": "node server/setup-db.js",
+    "test": "node test/run-eligibility-tests.js",
     "dev": "vite --open",
     "preview": "vite preview",
-    "test": "node --test test/finance.test.js"
+    "test": "node --test test/finance.test.js && node test/run-eligibility-tests.js",
+    "test:finance": "node --test test/finance.test.js",
+    "test:eligibility": "node test/run-eligibility-tests.js"
   },
   "devDependencies": {
     "vite": "^7.0.0"
